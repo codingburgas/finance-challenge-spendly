@@ -3,5 +3,7 @@
         <file>index.html</file>
         <file>background.png</file>
         <file>register-img.png</file>
+        <file>register.html</file>
+        <file>login-img.png</file>
     </qresource>
 </RCC>

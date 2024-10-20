@@ -9,17 +9,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // Set up the web channel
     QWebChannel* channel = new QWebChannel(this);
-    channel->registerObject("backend", this);
+    channel->registerObject("backend", this);  // Register this object to be accessed from JavaScript
     view->page()->setWebChannel(channel);
 
-    // Load the HTML file
+    // Load the login page (index.html) initially
     view->load(QUrl("qrc:/html/index.html"));
-    view->resize(480, 854); // Mobile-like dimensions
+
+    // Set the dimensions of the window
+    view->resize(410, 680);  // Adjust window size
     setCentralWidget(view);
 
-    this->resize(view->size());
+    // Make the window non-resizable
+    this->setFixedSize(view->size());
 
-    // Connect signals from the Firebase helper to JavaScript functions
+    // Connect signals from Firebase helper to JavaScript functions
     connect(firebaseHelper, &FirebaseRestHelper::authenticationSuccess, this, [=]() {
         runJavaScript("showStatusMessage('Authentication successful!', true);");
     });
@@ -28,12 +31,15 @@ MainWindow::MainWindow(QWidget *parent)
     });
 }
 
+
+
 MainWindow::~MainWindow() {
     delete view;
     delete firebaseHelper;
 }
 
 void MainWindow::handleAuthenticationRequest(const QString& type, const QString& email, const QString& password) {
+    // Handle Sign In and Sign Up requests
     if (type == "signIn") {
         firebaseHelper->signIn(email, password);
     } else if (type == "signUp") {
@@ -42,5 +48,6 @@ void MainWindow::handleAuthenticationRequest(const QString& type, const QString&
 }
 
 void MainWindow::runJavaScript(const QString& script) {
+    // Run JavaScript code in the web engine
     view->page()->runJavaScript(script);
 }

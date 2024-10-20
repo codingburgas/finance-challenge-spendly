@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>Spendly - Login</title>
+    <title>Spendly - Register</title>
     <style>
         /* Ensure the background image covers the entire screen */
         html, body {
@@ -34,11 +34,11 @@
             padding: 0;
         }
 
-        /* Background container behind email, password, and buttons */
+        /* Background container behind input fields and buttons */
         .input-background {
             position: relative;
-            background: rgba(66, 66, 66, 0.5); /* 70% opacity */
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 25px rgba(0, 0, 0, 0.2), inset 7px 0px 21px rgba(0, 0, 0, 0.2);
+            background: rgba(66, 66, 66, 0.7); /* 70% opacity */
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 75px rgba(0, 0, 0, 0.2), inset 7px 0px 51px rgba(0, 0, 0, 0.2);
             border-radius: 20px;
             padding: 20px;
             width: 100%;
@@ -55,12 +55,6 @@
         }
 
         .hidden { display: none; }
-
-        /* Styling for input field labels */
-        label {
-            font-size: 1rem;
-            color: #636363;
-        }
 
         /* Adjust the line (input) below the label */
         input {
@@ -83,7 +77,7 @@
             width: 100%;
             padding: 12px;
             text-align: center;
-            background-color: #FD7C20;
+            background-color: #4CAF50; /* Green color */
             color: white;
             border-radius: 8px;
             margin-top: 20px;
@@ -91,7 +85,7 @@
         }
 
         .btn:hover {
-            background-color: #C05000;  /* Darker orange on hover */
+            background-color: #388E3C;  /* Darker green on hover */
         }
 
         .text-link {
@@ -102,7 +96,7 @@
         }
 
         .text-link:hover {
-            color: #C05000; /* Darker orange on hover */
+            color: #388E3C; /* Darker green on hover */
         }
 
         /* Styling for the line with text */
@@ -131,7 +125,7 @@
         .line-text {
             font-size: 1rem;
             color: #FFFFFF;
-            font-weight:bold;
+            font-weight: bold;
         }
 
     </style>
@@ -139,14 +133,14 @@
 <body class="backdrop flex items-center justify-center min-h-screen">
     <div id="content" class="container mx-auto p-8 max-w-md w-full hidden">
         <div class="flex flex-col items-center mb-6">
-            <img src="qrc:/html/login-img.png" alt="Login" class="w-48 h-32 mb-4 fade-in">
+            <img src="qrc:/html/register-img.png" alt="Login" class="w-48 h-32 mb-4 fade-in">
         </div>
 
         <!-- Background Container around input fields and buttons -->
         <div class="input-background fade-in">
             <!-- Line with text -->
             <div class="line-text-container">
-                <span class="line-text">Login</span>
+                <span class="line-text">Create Account</span>
             </div>
 
             <form>
@@ -157,16 +151,18 @@
                     <input type="password" id="password" class="w-full focus:outline-none" placeholder="Password">
                 </div>
 
-                <!-- Sign In Button -->
-                <button id="signInButton" type="button" class="btn" style="font-weight: bold;">Sign In</button>
+                <!-- Sign Up Button -->
+                <button id="signUpButton" type="button" class="btn" style="font-weight: bold;" >Sign Up</button>
 
-                <!-- Sign Up link -->
-                <a href="qrc:/html/register.html" class="text-link">Sign Up</a>
+                <!-- Sign In link -->
+                <a href="qrc:/html/index.html" class="text-link">Sign In</a>
             </form>
         </div>
 
         <p id="statusMessage" class="mt-4 text-center text-red-500 fade-in"></p>
     </div>
+
+
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
         // WebChannel initialization
@@ -174,12 +170,12 @@
             window.backend = channel.objects.backend;
         });
 
-        // Sign In button event listener
-        document.getElementById("signInButton").addEventListener("click", function() {
+        // Sign Up button event listener
+        document.getElementById("signUpButton").addEventListener("click", function() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             if (window.backend) {
-                window.backend.handleAuthenticationRequest("signIn", email, password);
+                window.backend.handleAuthenticationRequest("signUp", email, password);
             } else {
                 console.error("WebChannel is not initialized");
             }
