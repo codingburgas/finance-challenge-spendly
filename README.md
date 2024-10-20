@@ -1,1 +1,35 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/u5k3noT3)
+<p align="center">
+  <img src="" alt="Logo" width="200" />
+</p>
+
+<h1 align="center">Team Spendly</h1>
+
+---
+
+## 🚀 Overview
+
+**Team Spendly** 
+
+## ✨ Features
+
+- Real-time tracking of team expenses
+- Customizable budgets for different departments
+- Comprehensive financial analysis and reports
+
+## ⚙️ Installation
+
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/your_username/finance-challenge-spendly.git
+    ```
+
+## 📝 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Star our project to support Team Spendly!
+</p>
+
