@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/html">
+        <file>index.html</file>
+        <file>background.png</file>
+        <file>register-img.png</file>
+    </qresource>
+</RCC>
