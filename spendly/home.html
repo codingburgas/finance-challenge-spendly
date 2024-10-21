@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Home - Spendly</title>
     <style>
-        /* Ensure the background image covers the entire screen */
         html, body {
             height: 100%;
             margin: 0;
@@ -29,11 +28,29 @@
 
         .content {
             position: relative;
-            z-index: 10; /* Bring content above the background */
+            z-index: 10;
             text-align: center;
             padding: 20px;
             border-radius: 10px;
             background: rgba(66, 66, 66, 0.5);
+        }
+
+        /* Sliding form styles */
+        .sliding-form {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: rgba(66, 66, 66, 0.9);
+            padding: 20px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            transition: bottom 0.5s ease-in-out;
+            z-index: 20;
+        }
+
+        .sliding-form.visible {
+            bottom: 0;
         }
     </style>
 </head>
@@ -44,17 +61,97 @@
         <p class="text-lg mt-4">Your user ID is: <span id="userId"></span></p>
         <button onclick="logout()" class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded">Logout</button>
     </div>
+
+    <!-- Sliding form for username and monthly income -->
+    <div class="sliding-form" id="slidingForm">
+        <h2 class="text-2xl font-bold mb-4">Complete your profile</h2>
+        <input id="usernameInput" type="text" placeholder="Username" class="block w-full p-2 mb-2 rounded">
+        <input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-full p-2 mb-2 rounded">
+        <button onclick="saveUserData()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Save</button>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const userId = localStorage.getItem('userId');
             if (userId) {
                 document.getElementById('userId').textContent = userId;
+                checkUserProfile(userId);
             } else {
                 // Redirect to index.html if userId is not found
                 window.location.href = 'index.html';
             }
         });
 
+        // Function to check user profile in Firestore
+        function checkUserProfile(userId) {
+            const url = `https://firestore.googleapis.com/v1/projects/spendly-3412a/databases/(default)/documents/users/${userId}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 404) {
+                        // User does not exist
+                        document.getElementById('slidingForm').classList.add('visible');
+                    } else {
+                        throw new Error('Failed to fetch user profile');
+                    }
+                })
+                .then(data => {
+                    if (data.fields) {
+                        const username = data.fields.username.stringValue;
+                        const monthlyIncome = data.fields.monthlyIncome.integerValue;
+                        if (!username || !monthlyIncome) {
+                            document.getElementById('slidingForm').classList.add('visible');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Function to save user data in Firestore
+        function saveUserData() {
+            const userId = localStorage.getItem('userId');
+            const username = document.getElementById('usernameInput').value;
+            const monthlyIncome = parseInt(document.getElementById('incomeInput').value, 10);
+
+            if (!username || isNaN(monthlyIncome)) {
+                alert("Please enter a valid username and monthly income.");
+                return;
+            }
+
+            const url = `https://firestore.googleapis.com/v1/projects/spendly-3412a/databases/(default)/documents/users/${userId}`;
+            const data = {
+                fields: {
+                    username: { stringValue: username },
+                    monthlyIncome: { integerValue: monthlyIncome }
+                }
+            };
+
+            fetch(url, {
+                method: 'PATCH', // Use PUT if you want to overwrite the document
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Hide the form after saving
+                    document.getElementById('slidingForm').classList.remove('visible');
+                    alert("Profile updated successfully!");
+                } else {
+                    alert("Failed to update profile.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to log out
         function logout() {
             localStorage.removeItem('userId');
             window.location.href = 'index.html';
