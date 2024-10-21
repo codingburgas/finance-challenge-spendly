@@ -14,7 +14,7 @@ public:
     void signIn(const QString& email, const QString& password);
 
 signals:
-    void authenticationSuccess();
+    void authenticationSuccess(const QString& userId);
     void authenticationFailed(const QString& error);
 
 private slots:
