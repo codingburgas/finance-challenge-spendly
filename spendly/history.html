@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>History - Spendly</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        .backdrop {
+            background-image: url('qrc:/html/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(66, 66, 66, 0.5);
+            margin-bottom: 70px; /* To prevent content overlap with tab navigator */
+        }
+
+        /* Tab navigation styles */
+        .tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(66, 66, 66, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 30;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .tab.active {
+            border-top: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <div class="backdrop"></div>
+    <div class="content">
+        <h1 class="text-4xl font-bold">History</h1>
+        <p class="text-lg mt-4">View your history here!</p>
+        <ul id="historyList" class="mt-4">
+            <!-- List of history items will be added here -->
+        </ul>
+    </div>
+
+    <!-- Tab Navigator -->
+    <div class="tab-nav">
+        <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
+        <div class="tab" onclick="navigateTo('home')">Home</div>
+        <div class="tab active" onclick="navigateTo('history')">History</div>
+    </div>
+
+    <script>
+        // Function to handle tab navigation
+        function navigateTo(page) {
+            window.location.href = `${page}.html`;
+        }
+
+        // Sample data for history (you can replace this with dynamic data from your backend)
+        const historyData = [
+            { date: "2024-10-01", action: "Added a reminder" },
+            { date: "2024-10-05", action: "Updated profile" },
+            { date: "2024-10-10", action: "Checked expenses" }
+        ];
+
+        // Function to load history data
+        function loadHistory() {
+            const historyList = document.getElementById('historyList');
+            historyData.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${item.date}: ${item.action}`;
+                listItem.className = "bg-gray-700 p-2 mb-2 rounded";
+                historyList.appendChild(listItem);
+            });
+        }
+
+        // Load history on page load
+        document.addEventListener('DOMContentLoaded', loadHistory);
+    </script>
+</body>
+</html>

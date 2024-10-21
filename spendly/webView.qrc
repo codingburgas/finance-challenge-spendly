@@ -6,5 +6,7 @@
         <file>register.html</file>
         <file>login-img.png</file>
         <file>home.html</file>
+        <file>history.html</file>
+        <file>reminders.html</file>
     </qresource>
 </RCC>

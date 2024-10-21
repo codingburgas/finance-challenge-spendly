@@ -63,6 +63,31 @@
         input::placeholder {
             color: rgba(255, 255, 255, 0.5); /* Lighten the placeholder text */
         }
+
+        /* Tab navigation styles */
+        .tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(66, 66, 66, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 30;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .tab.active {
+            border-top: 2px solid white;
+        }
     </style>
 </head>
 <body>
@@ -82,6 +107,13 @@
         <input id="usernameInput" type="text" placeholder="Username" class="block w-full p-2 mb-2 rounded">
         <input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-full p-2 mb-2 rounded">
         <button onclick="saveUserData()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Save</button>
+    </div>
+
+    <!-- Tab Navigator -->
+    <div class="tab-nav">
+        <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
+        <div class="tab active" onclick="navigateTo('home')">Home</div>
+        <div class="tab" onclick="navigateTo('history')">History</div>
     </div>
 
     <script>
@@ -183,6 +215,18 @@
         function logout() {
             localStorage.removeItem('userId');
             window.location.href = 'index.html';
+        }
+
+        // Function to handle tab navigation
+        function navigateTo(page) {
+            if (page === 'home') {
+                // Keep the user on the home page
+                document.querySelector('.tab.active').classList.remove('active');
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+            } else {
+                // Redirect to the corresponding page
+                window.location.href = `${page}.html`; // Make sure to create these pages
+            }
         }
     </script>
 </body>
