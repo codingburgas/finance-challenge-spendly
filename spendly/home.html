@@ -52,6 +52,17 @@
         .sliding-form.visible {
             bottom: 0;
         }
+
+        /* Update the styles for input fields */
+        input {
+            background-color: black; /* Set background color to black */
+            color: white; /* Set text color to white */
+        }
+
+        /* Optionally, style the placeholder text */
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5); /* Lighten the placeholder text */
+        }
     </style>
 </head>
 <body>
@@ -59,12 +70,15 @@
     <div class="content">
         <h1 class="text-4xl font-bold">Welcome to Spendly</h1>
         <p class="text-lg mt-4">Your user ID is: <span id="userId"></span></p>
+        <p class="text-lg mt-4">Your username is: <span id="usernameDisplay"></span></p>
+        <p class="text-lg mt-4">Your monthly income is: <span id="monthlyIncomeDisplay"></span></p>
+        <button onclick="showSlidingForm()" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded">Edit Profile</button>
         <button onclick="logout()" class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded">Logout</button>
     </div>
 
     <!-- Sliding form for username and monthly income -->
     <div class="sliding-form" id="slidingForm">
-        <h2 class="text-2xl font-bold mb-4">Complete your profile</h2>
+        <h2 class="text-2xl font-bold mb-4">Edit Your Profile</h2>
         <input id="usernameInput" type="text" placeholder="Username" class="block w-full p-2 mb-2 rounded">
         <input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-full p-2 mb-2 rounded">
         <button onclick="saveUserData()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Save</button>
@@ -103,12 +117,23 @@
                         const monthlyIncome = data.fields.monthlyIncome.integerValue;
                         if (!username || !monthlyIncome) {
                             document.getElementById('slidingForm').classList.add('visible');
+                        } else {
+                            // Display username and monthly income
+                            document.getElementById('usernameDisplay').textContent = username;
+                            document.getElementById('monthlyIncomeDisplay').textContent = monthlyIncome;
                         }
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
+        }
+
+        // Show the sliding form with current values
+        function showSlidingForm() {
+            document.getElementById('usernameInput').value = document.getElementById('usernameDisplay').textContent;
+            document.getElementById('incomeInput').value = document.getElementById('monthlyIncomeDisplay').textContent;
+            document.getElementById('slidingForm').classList.add('visible');
         }
 
         // Function to save user data in Firestore
@@ -141,6 +166,9 @@
                 if (response.ok) {
                     // Hide the form after saving
                     document.getElementById('slidingForm').classList.remove('visible');
+                    // Update the displayed username and monthly income
+                    document.getElementById('usernameDisplay').textContent = username;
+                    document.getElementById('monthlyIncomeDisplay').textContent = monthlyIncome;
                     alert("Profile updated successfully!");
                 } else {
                     alert("Failed to update profile.");
