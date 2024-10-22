@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>Edit Profile - Spendly</title>
+    <title>Home - Spendly</title>
     <style>
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
             color: white;
-            font-family: 'Nunito', sans-serif;
         }
 
         .backdrop {
@@ -37,7 +36,7 @@
         }
 
         /* Sliding form styles */
-        .edit-profile-container {
+        .sliding-form {
             position: fixed;
             bottom: -100%;
             left: 0;
@@ -48,147 +47,74 @@
             border-top-right-radius: 20px;
             transition: bottom 0.5s ease-in-out;
             z-index: 20;
-            width: 100%;
-            height: 600px;
-            text-align: center;
         }
 
-        .edit-profile-container.visible {
+        .sliding-form.visible {
             bottom: 0;
         }
 
-        .input-label {
-            font-size: 20px;
-            color: white;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
+        /* Update the styles for input fields */
         input {
-            background-color: #222;
-            color: white;
-            border: 2px solid #636363;
-            padding: 10px;
-            width: 80%;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            font-size: 18px;
+            background-color: black; /* Set background color to black */
+            color: white; /* Set text color to white */
         }
 
+        /* Optionally, style the placeholder text */
         input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.5); /* Lighten the placeholder text */
         }
 
-        .save-button {
-            background-color: #FD7C20;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
+        /* Tab navigation styles */
+        .tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(66, 66, 66, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 30;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
             cursor: pointer;
-            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
-            width: 150px;
-            margin-top: 20px;
+            color: white;
         }
 
-        .save-button:hover {
-            background-color: #ff9000;
+        .tab.active {
+            border-top: 2px solid white;
         }
-
-        /* Profile Picture (PFP) circle */
-        .pfp-holder {
-            width: 150px;
-            height: 150px;
-            background-color: #fff;
-            border-radius: 50%;
-            margin: 0 auto;
-            margin-bottom: 20px;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .pfp-holder img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-        }
-
-        /* Notification styles */
-        #notification, #errorNotification {
-            transition: top 0.5s ease-in-out;
-        }
-
-        #notification.show, #errorNotification.show {
-            display: block;
-        }
-
-/* Tab navigation styles */
-       .tab-nav {
-           position: fixed;
-           bottom: 0;
-           left: 0;
-           right: 0;
-           background: #2E2E2E;
-           display: flex;
-           justify-content: space-around;
-           padding: 10px 0;
-           box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
-       }
 
         .hidden {
-            display: none;
-        }
-
-        /* Hide everything else when edit profile is active */
-        .content.hidden, .tab-nav.hidden {
             display: none;
         }
     </style>
 </head>
 <body>
     <div class="backdrop"></div>
-
-    <!-- Success Notification -->
-    <div id="notification" class="fixed top-50 left-0 right-0 bg-green-500 text-white text-center py-2 hidden" style="z-index: 100;">
-        Profile updated successfully!
-    </div>
-
-    <!-- Error Notification -->
-    <div id="errorNotification" class="fixed top-0 left-0 right-0 bg-red-500 text-white text-center py-2 hidden" style="z-index: 100;">
-        Failed to update profile. Please try again.
-    </div>
-
     <div class="content">
         <h1 class="text-4xl font-bold">Welcome to Spendly</h1>
         <p class="text-lg mt-4">Your user ID is: <span id="userId"></span></p>
-        <!-- <p class="text-lg mt-4">Your username is: <span id="usernameDisplay"></span></p> -->
+        <p class="text-lg mt-4">Your username is: <span id="usernameDisplay"></span></p>
         <p class="text-lg mt-4">Your monthly income is: <span id="monthlyIncomeDisplay"></span></p>
         <button onclick="showSlidingForm()" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded">Edit Profile</button>
         <button onclick="logout()" class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded">Logout</button>
     </div>
 
     <!-- Sliding form for username and monthly income -->
-    <div class="edit-profile-container" id="slidingForm">
-        <!-- Profile Picture Holder -->
-        <div class="pfp-holder">
-            <img src="https://via.placeholder.com/150" alt="Profile Picture">
-        </div>
-
+    <div class="sliding-form" id="slidingForm">
         <h2 class="text-2xl font-bold mb-4">Edit Your Profile</h2>
-
-        <div class="input-label">Username</div>
-        <input id="usernameInput" type="text" placeholder="Enter Username">
-
-        <div class="input-label">Monthly Income</div>
-        <input id="incomeInput" type="number" placeholder="Enter Monthly Income">
-
-        <button onclick="saveUserData()" class="save-button">Save</button>
+        <input id="usernameInput" type="text" placeholder="Username" class="block w-full p-2 mb-2 rounded">
+        <input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-full p-2 mb-2 rounded">
+        <button onclick="saveUserData()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Save</button>
     </div>
 
     <!-- Tab Navigator -->
-    <div class="tab-nav">
+    <div class="tab-nav hidden" id="tabNav">
         <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
         <div class="tab active" onclick="navigateTo('home')">Home</div>
         <div class="tab" onclick="navigateTo('history')">History</div>
@@ -199,9 +125,8 @@
             const userId = localStorage.getItem('userId');
             if (userId) {
                 document.getElementById('userId').textContent = userId;
-                checkUserProfile(userId); // Check profile and show form if necessary
+                checkUserProfile(userId);
             } else {
-                // Redirect to index.html if userId is not found
                 window.location.href = 'index.html';
             }
         });
@@ -214,21 +139,23 @@
                     if (response.ok) {
                         return response.json();
                     } else if (response.status === 404) {
-                        showSlidingForm();
+                        document.getElementById('slidingForm').classList.add('visible');
+                        document.getElementById('tabNav').classList.add('hidden');
                     } else {
                         throw new Error('Failed to fetch user profile');
                     }
                 })
                 .then(data => {
                     if (data.fields) {
-                        const username = data.fields.username.stringValue;
-                        const monthlyIncome = data.fields.monthlyIncome.integerValue;
-
+                        const username = data.fields.username?.stringValue;
+                        const monthlyIncome = data.fields.monthlyIncome?.integerValue;
                         if (!username || !monthlyIncome) {
-                            showSlidingForm();
+                            document.getElementById('slidingForm').classList.add('visible');
+                            document.getElementById('tabNav').classList.add('hidden');
                         } else {
                             document.getElementById('usernameDisplay').textContent = username;
                             document.getElementById('monthlyIncomeDisplay').textContent = monthlyIncome;
+                            document.getElementById('tabNav').classList.remove('hidden');
                         }
                     }
                 })
@@ -238,11 +165,10 @@
         }
 
         function showSlidingForm() {
-            document.getElementById('usernameInput').value = document.getElementById('usernameDisplay').textContent || '';
-            document.getElementById('incomeInput').value = document.getElementById('monthlyIncomeDisplay').textContent || '';
+            document.getElementById('usernameInput').value = document.getElementById('usernameDisplay').textContent;
+            document.getElementById('incomeInput').value = document.getElementById('monthlyIncomeDisplay').textContent;
             document.getElementById('slidingForm').classList.add('visible');
-            document.querySelector('.content').classList.add('hidden');
-            document.querySelector('.tab-nav').classList.add('hidden');
+            document.getElementById('tabNav').classList.add('hidden');
         }
 
         function saveUserData() {
@@ -251,7 +177,7 @@
             const monthlyIncome = parseInt(document.getElementById('incomeInput').value, 10);
 
             if (!username || isNaN(monthlyIncome)) {
-                showNotification('error');
+                alert("Please enter a valid username and monthly income.");
                 return;
             }
 
@@ -273,32 +199,17 @@
             .then(response => {
                 if (response.ok) {
                     document.getElementById('slidingForm').classList.remove('visible');
-                    document.querySelector('.content').classList.remove('hidden');
-                    document.querySelector('.tab-nav').classList.remove('hidden');
                     document.getElementById('usernameDisplay').textContent = username;
                     document.getElementById('monthlyIncomeDisplay').textContent = monthlyIncome;
-                    showNotification('success');
+                    document.getElementById('tabNav').classList.remove('hidden');
+                    alert("Profile updated successfully!");
                 } else {
-                    showNotification('error');
+                    alert("Failed to update profile.");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('error');
             });
-        }
-
-        function showNotification(type) {
-            const notification = document.getElementById('notification');
-            const errorNotification = document.getElementById('errorNotification');
-
-            if (type === 'success') {
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 3000);
-            } else if (type === 'error') {
-                errorNotification.classList.add('show');
-                setTimeout(() => errorNotification.classList.remove('show'), 3000);
-            }
         }
 
         function logout() {
