@@ -13,10 +13,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(firebaseHelper, &FirebaseRestHelper::authenticationSuccess, this, [this](const QString& userId) {
         runJavaScript(QString("localStorage.setItem('userId', '%1');").arg(userId));
+        firebaseHelper->fetchUserProfile(userId);
         runJavaScript("window.location.href = 'home.html';"); // Redirect to home.html
     });
     connect(firebaseHelper, &FirebaseRestHelper::authenticationFailed, this, [this](const QString& error) {
         runJavaScript(QString("showStatusMessage('Authentication failed: %1', false);").arg(error));
+    });
+    connect(firebaseHelper, &FirebaseRestHelper::userProfileFetched, this, [this](const QString& username, double monthlyIncome) {
+        qDebug() << "Calling runJavaScript with: " << username << ", " << monthlyIncome;
+        runJavaScript(QString("populateUserProfile('%1', %2);").arg(username).arg(monthlyIncome));
     });
 }
 
@@ -31,6 +36,10 @@ void MainWindow::handleAuthenticationRequest(const QString& type, const QString&
     } else if (type == "signUp") {
         firebaseHelper->signUp(email, password);
     }
+}
+
+void MainWindow::handleProfileUpdate(const QString& userId, const QString& username, int monthlyIncome) {
+    firebaseHelper->updateUserProfile(userId, username, monthlyIncome);
 }
 
 void MainWindow::runJavaScript(const QString& script) {

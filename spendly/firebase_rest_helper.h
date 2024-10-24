@@ -12,10 +12,13 @@ public:
     explicit FirebaseRestHelper(QObject* parent = nullptr);
     void signUp(const QString& email, const QString& password);
     void signIn(const QString& email, const QString& password);
+    void updateUserProfile(const QString& userId, const QString& username, int monthlyIncome);
+    void fetchUserProfile(const QString& userId);
 
 signals:
     void authenticationSuccess(const QString& userId);
     void authenticationFailed(const QString& error);
+    void userProfileFetched(const QString& username, int monthlyIncome);
 
 private slots:
     void onNetworkReply(QNetworkReply* reply);
