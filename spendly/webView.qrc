@@ -9,4 +9,8 @@
         <file>history.html</file>
         <file>reminders.html</file>
     </qresource>
+    <qresource prefix="/assets">
+        <file>assets/icon.png</file>
+        <file>assets/icon-mac.icns</file>
+    </qresource>
 </RCC>

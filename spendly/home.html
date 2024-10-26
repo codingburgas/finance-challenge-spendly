@@ -165,7 +165,7 @@
     </div>
 
     <!-- Tab Navigator -->
-    <div class="tab-nav hidden" id="tabNav">
+    <div class="tab-nav" id="tabNav">
         <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
         <div class="tab active" onclick="navigateTo('home')">Home</div>
         <div class="tab" onclick="navigateTo('history')">History</div>
@@ -173,63 +173,72 @@
 
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
-        // WebChannel initialization
-        new QWebChannel(qt.webChannelTransport, function(channel) {
-            console.log("WebChannel initialized");
-            window.backend = channel.objects.backend;
-        });
+            // WebChannel Initialization
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                window.backend = channel.objects.backend;
+            });
 
-        const userId = localStorage.getItem('userId');
+            const userId = localStorage.getItem('userId');
 
-        function toggleSlidingForm() {
-            const slidingForm = document.getElementById('slidingForm');
-            if (slidingForm.classList.contains('visible')) {
-                slidingForm.classList.remove('visible');
-                document.getElementById('tabNav').classList.remove('hidden');
-            } else {
-                // Ensure values are retrieved properly
-                const username = document.getElementById('usernameDisplay')?.textContent || '';
-                const monthlyIncome = document.getElementById('monthlyIncomeDisplay')?.textContent || 0;
+            document.addEventListener("DOMContentLoaded", function() {
+                const savedUsername = localStorage.getItem('username') || "User";
+                const savedIncome = parseInt(localStorage.getItem('monthlyIncome')) || 0;
 
-                document.getElementById('usernameInput').value = username;
-                document.getElementById('incomeInput').value = monthlyIncome;
+                // Populate the user profile
+                populateUserProfile(savedUsername, savedIncome);
 
-                slidingForm.classList.add('visible');
-                document.getElementById('tabNav').classList.add('hidden');
+                // Check if the profile was saved before (to not show the sliding form)
+                const profileSaved = localStorage.getItem('profileSaved') === 'true';
+
+                // If profile is not saved, set a timeout to toggle the sliding form after 1 second
+                if (!profileSaved) {
+                    setTimeout(() => {
+                        toggleSlidingForm();
+                    }, 500); // 500 milliseconds = 1/2 second
+                }
+            });
+
+            function toggleSlidingForm() {
+                const slidingForm = document.getElementById('slidingForm');
+                const isVisible = slidingForm.classList.toggle('visible');
+                document.getElementById('tabNav').classList.toggle('hidden', isVisible);
+                if (isVisible) {
+                    // Pre-fill the input fields with the current displayed username and monthly income
+                    const currentUsername = document.getElementById('usernameDisplay').textContent;
+                    const currentIncome = document.getElementById('monthlyIncomeDisplay').textContent;
+
+                    document.getElementById('usernameInput').value = currentUsername;
+                    document.getElementById('incomeInput').value = currentIncome;
+                }
             }
-        }
 
+            document.getElementById("editProfileBtn").addEventListener("click", function() {
+                const username = document.getElementById("usernameInput").value;
+                const monthlyIncome = parseInt(document.getElementById("incomeInput").value) || 0;
 
-        // Edit profile button event listene    r
-        document.getElementById("editProfileBtn").addEventListener("click", function() {
-            const username = document.getElementById("usernameInput").value;
-            const monthlyIncome = document.getElementById("incomeInput").value;
-            if (window.backend) {
-                window.backend.handleProfileUpdate(userId, username, monthlyIncome);
-            } else {
-                console.error("WebChannel is not initialized");
+                if (window.backend) {
+                    window.backend.handleProfileUpdate(userId, username, monthlyIncome);
+                }
+                localStorage.setItem('username', username);
+                localStorage.setItem('monthlyIncome', monthlyIncome);
+                localStorage.setItem('profileSaved', 'true'); // Set the profileSaved flag
+                populateUserProfile(username, monthlyIncome);
+                toggleSlidingForm();
+            });
+
+            function populateUserProfile(username, money) {
+                document.getElementById('monthlyIncomeDisplay').textContent = money;
+                document.getElementById('usernameDisplay').textContent = username;
             }
-        });
 
-        function populateUserProfile(username, money) {
-            console.log("Updating user profile with:", username, money);
-            document.getElementById('monthlyIncomeDisplay').textContent = money;
-            document.getElementById('usernameDisplay').textContent = username;
-        }
+            function logout() {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
 
-        function logout() {
-            localStorage.removeItem('userId');
-            window.location.href = 'index.html';
-        }
-
-        function navigateTo(page) {
-            if (page === 'home') {
-                document.querySelector('.tab.active').classList.remove('active');
-                document.querySelector('.tab:nth-child(2)').classList.add('active');
-            } else {
+            function navigateTo(page) {
                 window.location.href = `${page}.html`;
             }
-        }
-    </script>
+        </script>
 </body>
 </html>

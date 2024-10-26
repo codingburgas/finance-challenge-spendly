@@ -16,7 +16,7 @@ public:
     void fetchUserProfile(const QString& userId);
 
 signals:
-    void authenticationSuccess(const QString& userId);
+    void authenticationSuccess(const QString& userId); // Changed back to take only `userId` as an argument
     void authenticationFailed(const QString& error);
     void userProfileFetched(const QString& username, int monthlyIncome);
 
@@ -26,6 +26,7 @@ private slots:
 private:
     QNetworkAccessManager* networkManager;
     const QString apiKey = "AIzaSyDUgY1jN4EMveQ7G8LTAIYbov0UVqzbMQk"; // Replace with your actual API key
+    QString idToken; // Store idToken for use in authenticated requests
 };
 
 #endif // FIREBASE_REST_HELPER_H

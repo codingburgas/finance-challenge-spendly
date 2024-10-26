@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(firebaseHelper, &FirebaseRestHelper::authenticationSuccess, this, [this](const QString& userId) {
         runJavaScript(QString("localStorage.setItem('userId', '%1');").arg(userId));
-        firebaseHelper->fetchUserProfile(userId);
+        firebaseHelper->fetchUserProfile(userId); // Now it only requires userId
         runJavaScript("window.location.href = 'home.html';"); // Redirect to home.html
     });
     connect(firebaseHelper, &FirebaseRestHelper::authenticationFailed, this, [this](const QString& error) {
