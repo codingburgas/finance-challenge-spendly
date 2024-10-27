@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "Calling runJavaScript with: " << username << ", " << monthlyIncome;
 
         // Create a QTimer to introduce a delay before calling the JavaScript function
-        QTimer::singleShot(1000, this, [this, username, monthlyIncome]() {
+        QTimer::singleShot(100, this, [this, username, monthlyIncome]() {
             runJavaScript(QString("populateUserProfile('%1', %2);").arg(username).arg(monthlyIncome));
         });
     });
