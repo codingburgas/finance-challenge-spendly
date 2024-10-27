@@ -26,4 +26,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     webView.qrc
 
+ICON = assets/icon-mac.icns
+
 DISTFILES +=
