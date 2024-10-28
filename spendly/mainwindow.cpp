@@ -3,11 +3,12 @@
 #include <QTimer>
 #include <QOperatingSystemVersion>
 
-int timerDuration = 100; // Default for macOS
+int timerDuration =
 #ifdef Q_OS_WIN
-    timerDuration = 400; // Override for Windows
+    400; // Set timer duration for Windows
+#else
+    0;
 #endif
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), view(new QWebEngineView(this)), firebaseHelper(new FirebaseRestHelper(this)) {
 
@@ -64,7 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "JavaScript Array:" << jsArray;
 
         // Update the historyData variable and call loadHistory
-        runJavaScript(QString("historyData = %1; loadHistory();").arg(jsArray));
+        QTimer::singleShot(timerDuration, this, [this, jsArray]() {
+            runJavaScript(QString("historyData = %1; loadHistory();").arg(jsArray));
+
+        });
+
     });
 
     // Connect the loadFinished signal to ensure the page is fully loaded before any JS calls
@@ -100,5 +105,8 @@ void MainWindow::runJavaScript(const QString& script) {
 
 // New method to load receipts for history
 void MainWindow::loadHistory(const QString& userId) {
-    firebaseHelper->fetchUserReceipts(userId);
+    QTimer::singleShot(timerDuration, this, [this, userId]() {
+        firebaseHelper->fetchUserReceipts(userId);
+    });
+
 }
