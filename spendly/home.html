@@ -203,7 +203,7 @@
             <img src="home.png" alt="Home Icon">
             <span>Home</span>
         </div>
-        <div class="tab" onclick="navigateTo('history')">
+        <div class="tab" onclick="navigateToHistory()">
             <img src="history.png" alt="History Icon">
             <span>History</span>
         </div>
@@ -227,10 +227,6 @@
 
                 // Check if the profile was saved before (to not show the sliding form)
                 const profileSaved = localStorage.getItem('profileSaved') === 'true';
-
-                if (profileSaved) {
-                    toggleSlidingForm();
-                }
 
                 // If profile is not saved, set a timeout to toggle the sliding form after 1 second
                 if (!profileSaved) {
@@ -278,9 +274,16 @@
                 window.location.href = 'index.html';
             }
 
-            function navigateTo(page) {
-                window.location.href = `${page}.html`;
+            function navigateToHistory() {
+                const userId = localStorage.getItem('userId');
+                if (userId) {
+                    // Call the backend method to load history
+                    backend.loadHistory(userId);
+                    // Change the view to the history page
+                    window.location.href = 'qrc:/html/history.html'; // Change to your actual history HTML file
+                }
             }
+
         </script>
 </body>
 </html>

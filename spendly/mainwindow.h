@@ -15,6 +15,7 @@ public:
 public slots:
     void handleAuthenticationRequest(const QString& type, const QString& email, const QString& password);
     void handleProfileUpdate(const QString& userId, const QString& username, int monthlyIncome);
+    void loadHistory(const QString& userId);
 
 private:
     void runJavaScript(const QString& script);

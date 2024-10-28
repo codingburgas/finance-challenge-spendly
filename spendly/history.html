@@ -173,9 +173,13 @@
         </div>
     </div>
 
-    <script>
+<script>
+    let historyData = [];
+
     function loadHistory() {
         const historyList = document.getElementById('historyList');
+        historyList.innerHTML = ''; // Clear previous content
+
         historyData.forEach(item => {
             const listItem = document.createElement('li');
             listItem.className = "history-item";
@@ -216,17 +220,32 @@
         });
     }
 
-    // Sample data for demonstration
-    const historyData = [
-        { date: "23.11.2023", amount: "6.20", description: "1x Обедно меню" },
-        { date: "25.11.2023", amount: "320.93", description: "1x Сметка ток" }
-    ];
-        // Load history on page load
-        document.addEventListener('DOMContentLoaded', loadHistory);
+    // Load history on page load if data is available
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedData = localStorage.getItem('historyData');
+        if (storedData) {
+            historyData = JSON.parse(storedData); // Parse the JSON string back into an object
+            loadHistory();
+        }
+    });
 
-    function navigateTo(page) {
-        window.location.href = `${page}.html`;
+    // Save history data to local storage when it changes
+    function saveHistoryData() {
+        localStorage.setItem('historyData', JSON.stringify(historyData)); // Convert to JSON string
     }
-    </script>
+
+    // Call this function after fetching receipts
+    function updateHistoryData(newData) {
+        historyData = newData; // Update with new data
+        saveHistoryData(); // Save to local storage
+    }
+
+function navigateTo(page) {
+    window.location.href = `${page}.html`;
+}
+</script>
+
+
+
 </body>
 </html>

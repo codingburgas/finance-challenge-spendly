@@ -1,6 +1,12 @@
 #include "mainwindow.h"
 #include <QWebChannel>
 #include <QTimer>
+#include <QOperatingSystemVersion>
+
+int timerDuration = 100; // Default for macOS
+#ifdef Q_OS_WIN
+    timerDuration = 400; // Override for Windows
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), view(new QWebEngineView(this)), firebaseHelper(new FirebaseRestHelper(this)) {
@@ -20,6 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(firebaseHelper, &FirebaseRestHelper::authenticationSuccess, this, [this](const QString& userId) {
         runJavaScript(QString("localStorage.setItem('userId', '%1');").arg(userId));
         firebaseHelper->fetchUserProfile(userId);
+
+        // Only fetch receipts if you're going to the history screen after login
+        // Comment out the next line to stop fetching receipts during login
+        // firebaseHelper->fetchUserReceipts(userId);
+
         runJavaScript("window.location.href = 'qrc:/html/home.html';");
     });
 
@@ -28,17 +39,40 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "Calling runJavaScript with: " << username << ", " << monthlyIncome;
 
         // Create a QTimer to introduce a delay before calling the JavaScript function
-        QTimer::singleShot(400, this, [this, username, monthlyIncome]() {
+        QTimer::singleShot(timerDuration, this, [this, username, monthlyIncome]() {
             runJavaScript(QString("populateUserProfile('%1', %2);").arg(username).arg(monthlyIncome));
         });
     });
 
+    // Connect userReceiptsFetched signal to handle the receipt data
+    connect(firebaseHelper, &FirebaseRestHelper::userReceiptsFetched, this, [this](const QList<QVariantMap>& receipts) {
+        // Log the number of receipts fetched
+        qDebug() << "Fetched receipts count:" << receipts.size();
+
+        QString jsArray = "[";
+        for (const auto& receipt : receipts) {
+            jsArray += QString("{date: '%1', amount: '%2', description: 'Receipt'}")
+            .arg(receipt["date"].toString())
+                .arg(receipt["totalAmount"].toDouble());
+            if (&receipt != &receipts.last()) {
+                jsArray += ",";
+            }
+        }
+        jsArray += "]";
+
+        // Log the constructed JavaScript array
+        qDebug() << "JavaScript Array:" << jsArray;
+
+        // Update the historyData variable and call loadHistory
+        runJavaScript(QString("historyData = %1; loadHistory();").arg(jsArray));
+    });
+
     // Connect the loadFinished signal to ensure the page is fully loaded before any JS calls
-    connect(view, &QWebEngineView::loadFinished, this, [this](bool ok) {
+    connect(view, &QWebEngineView::loadFinished, this, [](bool ok) {
         if (ok) {
-            qDebug() << "home.html has loaded successfully. Ready to call JavaScript.";
+            qDebug() << "Page has loaded successfully.";
         } else {
-            qDebug() << "Failed to load home.html.";
+            qDebug() << "Failed to load page.";
         }
     });
 }
@@ -62,4 +96,9 @@ void MainWindow::handleProfileUpdate(const QString& userId, const QString& usern
 
 void MainWindow::runJavaScript(const QString& script) {
     view->page()->runJavaScript(script);
+}
+
+// New method to load receipts for history
+void MainWindow::loadHistory(const QString& userId) {
+    firebaseHelper->fetchUserReceipts(userId);
 }
