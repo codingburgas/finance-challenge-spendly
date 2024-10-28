@@ -8,6 +8,9 @@
         <file>home.html</file>
         <file>history.html</file>
         <file>reminders.html</file>
+        <file>history.png</file>
+        <file>home.png</file>
+        <file>reminders.png</file>
     </qresource>
     <qresource prefix="/assets">
         <file>assets/icon.png</file>

@@ -42,24 +42,36 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(66, 66, 66, 0.8);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 5px 0; /* Reduce padding to make it shorter */
             z-index: 30;
+            background: #464646;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
         }
 
         .tab {
             flex: 1;
-            text-align: center;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px; /* Adjust padding for shorter tab height */
             cursor: pointer;
             color: white;
         }
 
-        .tab.active {
-            border-top: 2px solid white;
+        .tab img {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 5px;
         }
+
+        .tab span {
+            font-size: 0.6rem; /* Smaller text */
+            font-weight: 600; /* Make text bold */
+        }
+
     </style>
 </head>
 <body>
@@ -77,10 +89,19 @@
     </div>
 
     <!-- Tab Navigator -->
-    <div class="tab-nav">
-        <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
-        <div class="tab" onclick="navigateTo('home')">Home</div>
-        <div class="tab" onclick="navigateTo('history')">History</div>
+    <div class="tab-nav" id="tabNav">
+        <div class="tab">
+            <img src="reminders.png" alt="Reminders Icon">
+            <span>Reminders</span>
+        </div>
+        <div class="tab" onclick="navigateTo('home')">
+            <img src="home.png" alt="Home Icon">
+            <span>Home</span>
+        </div>
+        <div class="tab" onclick="navigateTo('history')">
+            <img src="history.png" alt="History Icon">
+            <span>History</span>
+        </div>
     </div>
 
     <script>

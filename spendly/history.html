@@ -42,69 +42,191 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(66, 66, 66, 0.8);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 5px 0; /* Reduce padding to make it shorter */
             z-index: 30;
+            background: #464646;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
         }
 
         .tab {
             flex: 1;
-            text-align: center;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px; /* Adjust padding for shorter tab height */
             cursor: pointer;
             color: white;
         }
 
-        .tab.active {
-            border-top: 2px solid white;
+        .tab img {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 5px;
         }
+
+        .tab span {
+            font-size: 0.6rem; /* Smaller text */
+            font-weight: 600; /* Make text bold */
+        }
+        /* History of Purchase container styling */
+            .purchase-history-container {
+                text-align: center;
+                margin-top: 20px;
+                padding: 10px 0;
+                background-color: #444444;
+                border-radius: 15px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                color: #cccccc;
+                font-weight: bold;
+                margin-bottom: 20px;
+                font-size: 1.1rem;
+            }
+
+            /* Style each history card */
+            .history-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #333333;
+                border-radius: 15px;
+                padding: 15px;
+                margin: 10px 0;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            /* Left side of the history card */
+            .history-item-left {
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Amount and status (with green check icon) */
+            .history-item .amount {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+            }
+
+            /* Add a green check icon next to the amount */
+            .check-icon {
+                width: 16px;
+                height: 16px;
+                margin-left: 5px;
+                color: #00D048;
+            }
+
+            /* Item description styling */
+            .history-item .description {
+                font-size: 1rem;
+                color: #cccccc;
+            }
+
+            /* Date styling */
+            .history-item .date {
+                font-size: 0.8rem;
+                color: #999999;
+                margin-top: 5px;
+            }
+
+            /* QR Code styling */
+            .history-item img {
+                width: 60px;
+                height: 60px;
+                border-radius: 10px;
+            }
     </style>
 </head>
 <body>
-    <div class="backdrop"></div>
+<div class="backdrop"></div>
     <div class="content">
         <h1 class="text-4xl font-bold">History</h1>
         <p class="text-lg mt-4">View your history here!</p>
         <ul id="historyList" class="mt-4">
-            <!-- List of history items will be added here -->
+        <!-- List of history items will be added here -->
         </ul>
     </div>
+   <!-- New History of Purchase container -->
+   <div class="purchase-history-container">
+       History of Purchase
+   </div>
+
+
 
     <!-- Tab Navigator -->
-    <div class="tab-nav">
-        <div class="tab" onclick="navigateTo('reminders')">Reminders</div>
-        <div class="tab" onclick="navigateTo('home')">Home</div>
-        <div class="tab active" onclick="navigateTo('history')">History</div>
+    <div class="tab-nav" id="tabNav">
+        <div class="tab" onclick="navigateTo('reminders')">
+            <img src="reminders.png" alt="Reminders Icon">
+            <span>Reminders</span>
+        </div>
+        <div class="tab" onclick="navigateTo('home')">
+            <img src="home.png" alt="Home Icon">
+            <span>Home</span>
+        </div>
+        <div class="tab">
+            <img src="history.png" alt="History Icon">
+            <span>History</span>
+        </div>
     </div>
 
     <script>
-        // Function to handle tab navigation
-        function navigateTo(page) {
-            window.location.href = `${page}.html`;
-        }
+    function loadHistory() {
+        const historyList = document.getElementById('historyList');
+        historyData.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.className = "history-item";
 
-        // Sample data for history (you can replace this with dynamic data from your backend)
-        const historyData = [
-            { date: "2024-10-01", action: "Added a reminder" },
-            { date: "2024-10-05", action: "Updated profile" },
-            { date: "2024-10-10", action: "Checked expenses" }
-        ];
+            // Left side content
+            const leftContent = document.createElement('div');
+            leftContent.className = "history-item-left";
 
-        // Function to load history data
-        function loadHistory() {
-            const historyList = document.getElementById('historyList');
-            historyData.forEach(item => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${item.date}: ${item.action}`;
-                listItem.className = "bg-gray-700 p-2 mb-2 rounded";
-                historyList.appendChild(listItem);
-            });
-        }
+            const amount = document.createElement('span');
+            amount.className = "amount";
+            amount.textContent = `${item.amount} BGN`;
 
+            // Check icon
+            const checkIcon = document.createElement('span');
+            checkIcon.className = "check-icon";
+            amount.appendChild(checkIcon);
+
+            leftContent.appendChild(amount);
+
+            const description = document.createElement('span');
+            description.className = "description";
+            description.textContent = item.description;
+            leftContent.appendChild(description);
+
+            const date = document.createElement('span');
+            date.className = "date";
+            date.textContent = `Date: ${item.date}`;
+            leftContent.appendChild(date);
+
+            // Right side content (QR code or placeholder)
+            const qrCode = document.createElement('img');
+            qrCode.src = "path/to/qrcode.png"; // Replace with actual QR code image path
+            qrCode.alt = "QR Code";
+
+            listItem.appendChild(leftContent);
+            listItem.appendChild(qrCode);
+            historyList.appendChild(listItem);
+        });
+    }
+
+    // Sample data for demonstration
+    const historyData = [
+        { date: "23.11.2023", amount: "6.20", description: "1x Обедно меню" },
+        { date: "25.11.2023", amount: "320.93", description: "1x Сметка ток" }
+    ];
         // Load history on page load
         document.addEventListener('DOMContentLoaded', loadHistory);
+
+    function navigateTo(page) {
+        window.location.href = `${page}.html`;
+    }
     </script>
 </body>
 </html>
