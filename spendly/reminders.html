@@ -27,13 +27,18 @@
         }
 
         .content {
-            position: relative;
+            position: fixed;
+            bottom: 50px; /* Adjust to position content just above the navbar */
+            left: 0;
+            right: 0;
             z-index: 10;
             text-align: center;
             padding: 20px;
-            border-radius: 10px;
-            background: rgba(66, 66, 66, 0.5);
-            margin-bottom: 70px; /* To prevent content overlap with tab navigator */
+            border-radius: 25px;
+            margin: 0 auto;
+            background: #424242;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
+
         }
 
         /* Tab navigation styles */
@@ -77,13 +82,12 @@
 <body>
     <div class="backdrop"></div>
     <div class="content">
-        <h1 class="text-4xl font-bold">Reminders</h1>
-        <p class="text-lg mt-4">Manage your reminders here!</p>
+        <p class="text-lg" style="font-weight: 600;">Reminders</p>
         <form id="reminderForm" class="mt-4">
             <input type="text" id="reminderInput" placeholder="Add a new reminder" class="block w-full p-2 mb-2 rounded">
-            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Add Reminder</button>
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded" >Add Reminder</button>
         </form>
-        <ul id="reminderList" class="mt-4">
+        <ul id="reminderList" class="mt-4" style="margin-bottom: 300px;">
             <!-- List of reminders will be added here -->
         </ul>
     </div>
@@ -98,17 +102,18 @@
             <img src="home.png" alt="Home Icon">
             <span>Home</span>
         </div>
-        <div class="tab" onclick="navigateTo('history')">
+        <div class="tab" onclick="navigateToHistory()">
             <img src="history.png" alt="History Icon">
             <span>History</span>
         </div>
     </div>
-
+<script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
-        // Function to handle tab navigation
-        function navigateTo(page) {
-            window.location.href = `${page}.html`;
-        }
+    // WebChannel Initialization
+    new QWebChannel(qt.webChannelTransport, function(channel) {
+        window.backend = channel.objects.backend;
+    });
+
 
         // Handle reminder form submission
         document.getElementById('reminderForm').addEventListener('submit', function(e) {
@@ -131,6 +136,19 @@
             listItem.textContent = text;
             listItem.className = "bg-gray-700 p-2 mb-2 rounded";
             reminderList.appendChild(listItem);
+        }
+        function navigateToHistory() {
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                // Call the backend method to load history
+                backend.loadHistory(userId);
+                // Change the view to the history page
+                window.location.href = 'qrc:/html/history.html'; // Change to your actual history HTML file
+            }
+        }
+        // Function to handle tab navigation
+        function navigateTo(page) {
+            window.location.href = `${page}.html`;
         }
     </script>
 </body>

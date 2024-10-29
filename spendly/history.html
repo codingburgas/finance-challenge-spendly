@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             color: white;
+            overflow-y: hidden;
         }
 
         .backdrop {
@@ -27,13 +28,18 @@
         }
 
         .content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(66, 66, 66, 0.5);
-            margin-bottom: 70px; /* To prevent content overlap with tab navigator */
+        position: fixed;
+        bottom: 50px; /* Adjust to position content just above the navbar */
+        left: 0;
+        right: 0;
+        z-index: 10;
+        text-align: center;
+        padding: 20px;
+        border-top-left-radius: 25px;
+        border-top-right-radius: 25px;
+        margin: 0 auto;
+        background: #424242;
+        box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
         }
 
         /* Tab navigation styles */
