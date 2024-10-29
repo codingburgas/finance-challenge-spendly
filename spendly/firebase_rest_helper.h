@@ -12,14 +12,14 @@ public:
     explicit FirebaseRestHelper(QObject* parent = nullptr);
     void signUp(const QString& email, const QString& password);
     void signIn(const QString& email, const QString& password);
-    void updateUserProfile(const QString& userId, const QString& username, int monthlyIncome);
+    void updateUserProfile(const QString& userId, const QString& username, double monthlyIncome);
     void fetchUserProfile(const QString& userId);
     void fetchUserReceipts(const QString& userId);
 
 signals:
     void authenticationSuccess(const QString& userId); // Changed back to take only `userId` as an argument
     void authenticationFailed(const QString& error);
-    void userProfileFetched(const QString& username, int monthlyIncome);
+    void userProfileFetched(const QString& username, double monthlyIncome);
     void userReceiptsFetched(const QList<QVariantMap>& receipts);
 
 private slots:

@@ -220,7 +220,7 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 const savedUsername = localStorage.getItem('username') || "User";
-                const savedIncome = parseInt(localStorage.getItem('monthlyIncome')) || 0;
+                const savedIncome = parseFloat(localStorage.getItem('monthlyIncome')) || 0;
 
                 // Populate the user profile
                 populateUserProfile(savedUsername, savedIncome);
@@ -252,7 +252,7 @@
 
             document.getElementById("editProfileBtn").addEventListener("click", function() {
                 const username = document.getElementById("usernameInput").value;
-                const monthlyIncome = parseInt(document.getElementById("incomeInput").value) || 0;
+                const monthlyIncome = parseFloat(document.getElementById("incomeInput").value) || 0;
 
                 if (window.backend) {
                     window.backend.handleProfileUpdate(userId, username, monthlyIncome);

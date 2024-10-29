@@ -36,7 +36,7 @@ void FirebaseRestHelper::signIn(const QString& email, const QString& password) {
     networkManager->post(request, QJsonDocument(payload).toJson());
 }
 
-void FirebaseRestHelper::updateUserProfile(const QString& userId, const QString& username, int monthlyIncome) {
+void FirebaseRestHelper::updateUserProfile(const QString& userId, const QString& username, double monthlyIncome) {
     if (userId.isEmpty()) {
         qWarning() << "User ID is empty";
         return;
@@ -45,7 +45,7 @@ void FirebaseRestHelper::updateUserProfile(const QString& userId, const QString&
     QJsonObject data;
     data["fields"] = QJsonObject{
         {"username", QJsonObject{{"stringValue", username}}},
-        {"monthlyIncome", QJsonObject{{"integerValue", QString::number(monthlyIncome)}}}
+        {"monthlyIncome", QJsonObject{{"doubleValue", QString::number(monthlyIncome, 'f', 2)}}}
     };
 
     QNetworkRequest request(url);
@@ -100,7 +100,7 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
         if (jsonResponse.contains("fields") && jsonResponse["fields"].isObject()) {
             QJsonObject fields = jsonResponse["fields"].toObject();
             QString username;
-            int monthlyIncome = 0;
+            double monthlyIncome = 0.0;
             bool validProfile = false; // Flag to track if we have a valid profile
 
             // Extract username
@@ -110,11 +110,11 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
 
             // Extract monthly income
             if (fields.contains("monthlyIncome") && fields["monthlyIncome"].isObject()) {
-                monthlyIncome = fields["monthlyIncome"].toObject().value("integerValue").toString().toInt();
+                monthlyIncome = fields["monthlyIncome"].toObject().value("doubleValue").toDouble(); // Directly convert to double
             }
 
             // Check if both username and monthlyIncome are valid
-            if (!username.isEmpty() && monthlyIncome >= 0) {
+            if (!username.isEmpty() && monthlyIncome >= 0.0) {
                 validProfile = true; // Set flag to true if profile is valid
             }
 

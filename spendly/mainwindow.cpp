@@ -5,10 +5,11 @@
 
 int timerDuration =
 #ifdef Q_OS_WIN
-    400; // Set timer duration for Windows
+    400;
 #else
     0;
 #endif
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), view(new QWebEngineView(this)), firebaseHelper(new FirebaseRestHelper(this)) {
 
@@ -67,9 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
         // Update the historyData variable and call loadHistory
         QTimer::singleShot(timerDuration, this, [this, jsArray]() {
             runJavaScript(QString("historyData = %1; loadHistory();").arg(jsArray));
-
         });
-
     });
 
     // Connect the loadFinished signal to ensure the page is fully loaded before any JS calls
@@ -95,7 +94,7 @@ void MainWindow::handleAuthenticationRequest(const QString& type, const QString&
     }
 }
 
-void MainWindow::handleProfileUpdate(const QString& userId, const QString& username, int monthlyIncome) {
+void MainWindow::handleProfileUpdate(const QString& userId, const QString& username, double monthlyIncome) {
     firebaseHelper->updateUserProfile(userId, username, monthlyIncome);
 }
 
@@ -108,5 +107,4 @@ void MainWindow::loadHistory(const QString& userId) {
     QTimer::singleShot(timerDuration, this, [this, userId]() {
         firebaseHelper->fetchUserReceipts(userId);
     });
-
 }
