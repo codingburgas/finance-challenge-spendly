@@ -11,8 +11,8 @@
             margin: 0;
             padding: 0;
             color: white;
-            overflow-y: hidden;
         }
+    }
 
         .backdrop {
             background-image: url('qrc:/html/background.png');
@@ -28,17 +28,14 @@
         }
 
         .content {
-        position: fixed;
-        bottom: 50px; /* Adjust to position content just above the navbar */
+        bottom: 80px; /* Adjust to position content just above the navbar */
         left: 0;
         right: 0;
         z-index: 10;
         text-align: center;
         padding: 20px;
-        border-top-left-radius: 25px;
-        border-top-right-radius: 25px;
         margin: 0 auto;
-        background: #424242;
+        background: #575757;
         box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
         }
 
@@ -50,7 +47,8 @@
             right: 0;
             display: flex;
             justify-content: space-around;
-            padding: 5px 0; /* Reduce padding to make it shorter */
+            padding: -10px;
+
             z-index: 30;
             background: #464646;
             box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
@@ -145,24 +143,55 @@
                 height: 60px;
                 border-radius: 10px;
             }
+            /*History text line*/
+            #text-line h1 {
+              font-style: normal;
+              font-weight: 700;
+              font-size: 20px;
+              line-height: 58px;
+
+              }
+              #text-line  h1::before,
+              #text-line  h1::after {
+                background-color:rgba(99, 99, 99, 1);
+                content: "";
+                display: inline-block;
+                height: 1px;
+                position: relative;
+                vertical-align: middle;
+                width: 22%;
+              }
+
+              #text-line  h1::before
+              {
+                right: 0.4em;
+                margin-left: -50%;
+              }
+
+              #text-line h1::after
+              {
+                left: 0.4em;
+                margin-right: -50%;
+              }
+
+            .hr-between-contents
+            {
+                width: 80%;
+            }
     </style>
 </head>
 <body>
 <div class="backdrop"></div>
     <div class="content">
-        <h1 class="text-4xl font-bold">History</h1>
-        <p class="text-lg mt-4">View your history here!</p>
+        <div id="text-line">
+            <h1 class="text-4xl font-bold">History of purchase</h1>
+        </div>
         <ul id="historyList" class="mt-4">
         <!-- List of history items will be added here -->
         </ul>
     </div>
+    <br>
    <!-- New History of Purchase container -->
-   <div class="purchase-history-container">
-       History of Purchase
-   </div>
-
-
-
     <!-- Tab Navigator -->
     <div class="tab-nav" id="tabNav">
         <div class="tab" onclick="navigateTo('reminders')">
@@ -204,6 +233,11 @@
             amount.appendChild(checkIcon);
 
             leftContent.appendChild(amount);
+
+            // Horizontal line
+            const hr = document.createElement('hr');
+            hr.className = "hr-between-contents"
+            leftContent.appendChild(hr);
 
             const description = document.createElement('span');
             description.className = "description";
