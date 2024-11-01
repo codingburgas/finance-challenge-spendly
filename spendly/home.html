@@ -14,7 +14,7 @@
         }
 
         .backdrop {
-            background-image: url('qrc:/html/background2.png');
+            background-image: url('qrc:/html/background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -40,27 +40,98 @@
             bottom: -100%;
             left: 0;
             right: 0;
-            background: rgba(66, 66, 66, 0.9);
+            background: rgba(66, 66, 66, 1);
             padding: 20px;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             transition: bottom 0.5s ease-in-out;
             z-index: 100;
+            height: 500px; /* Increase the height of the sliding form */
         }
 
         .sliding-form.visible {
             bottom: 0;
         }
 
-        /* Update the styles for input fields */
-        input {
-            background-color: black; /* Set background color to black */
-            color: white; /* Set text color to white */
+        /* Styling for input field labels */
+        label {
+            font-size: 1rem;
+            color: #636363;
         }
 
-        /* Optionally, style the placeholder text */
+        /* Adjust the line (input) below the label */
+        input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #636363;
+            background: transparent;
+            outline: none;
+            padding: 5px 0;
+            font-size: 1rem;
+            color: white;
+        }
+
         input::placeholder {
-            color: rgba(255, 255, 255, 0.5); /* Lighten the placeholder text */
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Profile picture circle */
+        .profile-picture {
+            width: 80px;
+            height: 80px;
+            background: #222222;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.1), inset 7px 0px 51px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Claymorphic box styles */
+        .claymorphic-box {
+            position: absolute;
+            top: calc(100% + 20px);
+            left: 0;
+            right: 0;
+            height: 450px;
+            background-color: #424242;
+            border-radius: 23px;
+            box-shadow: 15px 15px 48px 0px rgba(0, 0, 0, 0.1),
+                        inset -5px -5px 16px 0px rgba(0, 0, 0, 0.1),
+                        inset 0px 11px 28px 0px rgba(0, 0, 0, 0.1),
+                        inset -9px -9px 75px rgba(0, 0, 0, 0.1),
+                        inset 7px 0px 51px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            color: white;
+            overflow: auto;
+        }
+
+        .wide-box {
+            background-color: #555555;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            height: 190px;
+        }
+
+        .small-box {
+            background-color: #666666;
+            border-radius: 15px;
+            padding: 15px;
+            flex: 1;
+            margin-right: 10px;
+            height: 120px;
+        }
+
+        .small-box:last-child {
+            margin-right: 0;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
         }
 
         /* Tab navigation styles */
@@ -97,9 +168,7 @@
         .tab span {
             font-size: 0.6rem; /* Smaller text */
             font-weight: 600; /* Make text bold */
-            color:rgba(217, 217, 217, 1); /* Add color to the text */
         }
-
 
         .hidden {
             display: none;
@@ -127,19 +196,20 @@
         .edit-profile:hover {
             background-color: #c1c1c1;
         }
-        .nameoutput{
-        display: inline;
-        font-style: normal;
-        font-weight: 650;
-        color: #FFFFFF;
-        font-size: 16px;
 
+        .nameoutput {
+            display: inline;
+            font-style: normal;
+            font-weight: 650;
+            color: #FFFFFF;
+            font-size: 16px;
         }
-        .balance
-        {
-           font-size: 60px;
-            font-weight:800;
+
+        .balance {
+            font-size: 60px;
+            font-weight: 800;
         }
+
         /* Logout button */
         .logout-button {
             position: fixed;
@@ -163,41 +233,54 @@
             background-color: #da7227;
         }
 
-        .homeBox {
-            background-color: rgba(66, 66, 66, 1);
+        /* Cancel button for sliding form */
+        .cancel-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 15px;
+            background: #ff4444;
             color: white;
-            padding: 16px;
-            border-radius: 25px;
-            top: 30px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            height: 500px;
-            margin: 20px auto;
-            text-align: center;
-            z-index: 20;
-            position: relative;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            font-weight: 650;
         }
 
-        .homeBox .title {
-            font-size: 20px;
-            font-weight: 600;
+        .cancel-button:hover {
+            background-color: #d93b3b;
         }
     </style>
 </head>
 <body>
-    <div class="backdrop"></div>
-    <div class="content" style="top: 3%; transform: translateY(15%);">
-        <p class="nameoutput">Welcome </p>
-        <p id="usernameDisplay" class="nameoutput"></p>
-        <br>
-        <div class="flex justify-center items-center text-center mt-4">
-            <p class="text-2xl font-semibold">
-                <span id="monthlyIncomeDisplay" class="balance"></span>
-                <svg width="20" height="28" viewBox="0 0 92 133" fill="#00D048" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-left: 5px;">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M51.6238 0C46.1009 0 41.6238 4.47715 41.6238 10V12.0112C39.1282 12.6347 36.7139 13.4251 34.3809 14.3822C27.7213 17.0941 22.2118 20.9044 17.8521 25.8133C13.5269 30.7221 10.815 36.4549 9.71649 43.0115C8.41204 51.0098 9.99111 57.3432 14.4537 62.0118C18.9506 66.6804 25.5587 70.0788 34.2779 72.2071L44.8337 74.7817C48.5754 75.6399 51.5962 76.6011 53.8962 77.6652C56.2305 78.7294 57.8782 79.9823 58.8394 81.4241C59.8349 82.8659 60.161 84.5651 59.8177 86.5217C59.4744 88.6501 58.5132 90.5381 56.9342 92.1858C55.3894 93.8335 53.3126 95.1208 50.7037 96.0477C48.1291 96.9745 45.1255 97.4379 41.6927 97.4379C37.951 97.4379 34.7585 96.8544 32.1153 95.6872C29.4721 94.5201 27.5154 92.8037 26.2453 90.5381C25.0095 88.2725 24.5804 85.4404 24.958 82.042H0.602494C-0.667629 90.2463 0.0704158 97.0432 2.81663 102.433C5.56284 107.822 9.99111 111.856 16.1014 114.533C19.8348 116.139 24.056 117.257 28.7651 117.887V122.185C28.7651 127.708 33.2422 132.185 38.7651 132.185H42.5775C48.1003 132.185 52.5775 127.708 52.5775 122.185V117.24C55.7873 116.619 58.8014 115.768 61.6199 114.688C68.2795 112.147 73.6689 108.491 77.7882 103.72C81.9419 98.9484 84.5679 93.2328 85.6664 86.5732C86.3873 82.3509 86.3186 78.5406 85.4605 75.1421C84.6023 71.7437 83.0232 68.74 80.7232 66.1311C78.4233 63.4879 75.4196 61.2394 71.7122 59.3857C68.0392 57.4977 63.6967 55.9873 58.6849 54.8545L50.0343 52.7948C47.7344 52.2799 45.6575 51.6792 43.8038 50.9926C41.9845 50.3061 40.4569 49.4994 39.2211 48.5725C38.0196 47.6457 37.1786 46.5815 36.698 45.3801C36.2174 44.1786 36.1316 42.8055 36.4406 41.2607C36.7838 39.3041 37.6249 37.5877 38.9636 36.1116C40.3024 34.6012 42.139 33.434 44.4732 32.6102C46.8075 31.752 49.6224 31.3229 52.9178 31.3229C57.8953 31.3229 61.5341 32.387 63.834 34.5154C66.1683 36.6437 67.1981 39.6473 66.9235 43.5264H91.3305C92.3946 36.8668 91.6738 31.0483 89.1678 26.0707C86.6963 21.0589 82.6628 17.1799 77.0673 14.4337C73.6755 12.7378 69.7985 11.5591 65.4361 10.8975V10C65.4361 4.47715 60.959 0 55.4361 0H51.6238Z" fill="#00D048" />
-                </svg>
-            </p>
-        </div>
+<div class="backdrop"></div>
+<div class="content" style="top: 3%; transform: translateY(15%);">
+    <p class="nameoutput">Welcome </p>
+    <p id="usernameDisplay" class="nameoutput"></p>
+    <br>
+    <div class="flex justify-center items-center text-center mt-4">
+        <p class="text-2xl font-semibold">
+            <span id="monthlyIncomeDisplay" class="balance"></span>
+            <svg width="20" height="28" viewBox="0 0 92 133" fill="#00D048" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-left: 5px;">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M51.6238 0C46.1009 0 41.6238 4.47715 41.6238 10V12.0112C39.1282 12.6347 36.7139 13.4251 34.3809 14.3822C27.7213 17.0941 22.2118 20.9044 17.8521 25.8133C13.5269 30.7221 10.815 36.4549 9.71649 43.0115C8.41204 51.0098 9.99111 57.3432 14.4537 62.0118C18.9506 66.6804 25.5587 70.0788 34.2779 72.2071L44.8337 74.7817C48.5754 75.6399 51.5962 76.6011 53.8962 77.6652C56.2305 78.7294 57.8782 79.9823 58.8394 81.4241C59.8349 82.8659 60.161 84.5651 59.8177 86.5217C59.4744 88.6501 58.5132 90.5381 56.9342 92.1858C55.3894 93.8335 53.3126 95.1208 50.7037 96.0477C48.1291 96.9745 45.1255 97.4379 41.6927 97.4379C37.951 97.4379 34.7585 96.8544 32.1153 95.6872C29.4721 94.5201 27.5154 92.8037 26.2453 90.5381C25.0095 88.2725 24.5804 85.4404 24.958 82.042H0.602494C-0.667629 90.2463 0.0704158 97.0432 2.81663 102.433C5.56284 107.822 9.99111 111.856 16.1014 114.533C19.8348 116.139 24.056 117.257 28.7651 117.887V122.185C28.7651 127.708 33.2422 132.185 38.7651 132.185H42.5775C48.1003 132.185 52.5775 127.708 52.5775 122.185V117.24C55.7873 116.619 58.8014 115.768 61.6199 114.688C68.2795 112.147 73.6689 108.491 77.7882 103.72C81.9419 98.9484 84.5679 93.2328 85.6664 86.5732C86.3873 82.3509 86.3186 78.5406 85.4605 75.1421C84.6023 71.7437 83.0232 68.74 80.7232 66.1311C78.4233 63.4879 75.4196 61.2394 71.7122 59.3857C68.0392 57.4977 63.6967 55.9873 58.6849 54.8545L50.0343 52.7948C47.7344 52.2799 45.6575 51.6792 43.8038 50.9926C41.9845 50.3061 40.4569 49.4994 39.2211 48.5725C38.0196 47.6457 37.1786 46.5815 36.698 45.3801C36.2174 44.1786 36.1316 42.8055 36.4406 41.2607C36.7838 39.3041 37.6249 37.5877 38.9636 36.1116C40.3024 34.6012 42.139 33.434 44.4732 32.6102C46.8075 31.752 49.6224 31.3229 52.9178 31.3229C57.8953 31.3229 61.5341 32.387 63.834 34.5154C66.1683 36.6437 67.1981 39.6473 66.9235 43.5264H91.3305C92.3946 36.8668 91.6738 31.0483 89.1678 26.0707C86.6963 21.0589 82.6628 17.1799 77.0673 14.4337C73.6755 12.7378 69.7985 11.5591 65.4361 10.8975V10C65.4361 4.47715 60.959 0 55.4361 0H51.6238Z" fill="#00D048" />
+            </svg>
+        </p>
+    </div>
+
+    <!-- New claymorphic box -->
+    <div class="claymorphic-box mt-8 mx-auto p-8">
+                <div class="wide-box">
+                    <p>Space for the purchase diagram</p>
+                </div>
+                <div class="row">
+                    <div class="small-box">
+                        <p>latest purchase</p>
+                    </div>
+                    <div class="small-box">
+                        <p>biggest purchase yet</p>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <!-- Edit Profile button as profile picture circle -->
@@ -206,16 +289,20 @@
     <!-- Logout button -->
     <button onclick="logout()" class="logout-button">Log Out</button>
 
-    <!-- Sliding form for username and monthly income -->
+    <!-- Sliding form for username, email, password, and monthly income -->
     <div class="sliding-form" id="slidingForm">
-        <h2 class="text-2xl font-bold mb-4">Edit Your Profile</h2>
-        <input id="usernameInput" type="text" placeholder="Username" class="block w-full p-2 mb-2 rounded">
-        <input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-full p-2 mb-2 rounded">
-        <button id="editProfileBtn" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Save</button>
-    </div>
-
-    <div class="homeBox">
-        <p class="title">Home Box</p>
+        <button onclick="toggleSlidingForm()" class="cancel-button">Cancel</button>
+        <button id="editProfileBtn" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded" style="position: absolute; top: 10px; right: 10px;padding: 5px 15px; color: white; border-radius: 10px; cursor: pointer; border: none; font-weight: 650;">Save</button>
+        <div class="profile-picture">
+            <!-- SVG for profile picture -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" width="60" height="60">
+                <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z"/>
+            </svg>
+        </div>
+        <div class="flex flex-col items-center"><label for="usernameInput" class="self-center w-2/3 text-left">Username</label><input id="usernameInput" type="text" placeholder="Username" class="block w-2/3 mx-auto p-2 mb-2 rounded"></div>
+        <div class="flex flex-col items-center"><label for="emailInput" class="self-center w-2/3 text-left">Email</label><input id="emailInput" type="email" placeholder="Email" class="block w-2/3 mx-auto p-2 mb-2 rounded"></div>
+        <div class="flex flex-col items-center"><label for="passwordInput" class="self-center w-2/3 text-left">Password</label><input id="passwordInput" type="password" placeholder="Password" class="block w-2/3 mx-auto p-2 mb-2 rounded"></div>
+        <div class="flex flex-col items-center"><label for="incomeInput" class="self-center w-2/3 text-left">Monthly Income</label><input id="incomeInput" type="number" placeholder="Monthly Income" class="block w-2/3 mx-auto p-2 mb-2 rounded"></div>
     </div>
 
     <!-- Tab Navigator -->
@@ -245,6 +332,7 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 const savedUsername = localStorage.getItem('username') || "User";
+                const savedEmail = localStorage.getItem('email') || "";
                 const savedIncome = parseFloat(localStorage.getItem('monthlyIncome')) || 0;
 
                 // Populate the user profile
@@ -266,23 +354,29 @@
                 const isVisible = slidingForm.classList.toggle('visible');
                 document.getElementById('tabNav').classList.toggle('hidden', isVisible);
                 if (isVisible) {
-                    // Pre-fill the input fields with the current displayed username and monthly income
+                    // Pre-fill the input fields with the current displayed username, email, password and monthly income
                     const currentUsername = document.getElementById('usernameDisplay').textContent;
                     const currentIncome = document.getElementById('monthlyIncomeDisplay').textContent;
+                    const savedEmail = localStorage.getItem('email') || "";
 
                     document.getElementById('usernameInput').value = currentUsername;
                     document.getElementById('incomeInput').value = currentIncome;
+                    document.getElementById('emailInput').value = savedEmail;
+                    document.getElementById('passwordInput').value = "";
                 }
             }
 
             document.getElementById("editProfileBtn").addEventListener("click", function() {
                 const username = document.getElementById("usernameInput").value;
+                const email = document.getElementById("emailInput").value;
+                const password = document.getElementById("passwordInput").value;
                 const monthlyIncome = parseFloat(document.getElementById("incomeInput").value) || 0;
 
                 if (window.backend) {
                     window.backend.handleProfileUpdate(userId, username, monthlyIncome);
                 }
                 localStorage.setItem('username', username);
+                localStorage.setItem('email', email);
                 localStorage.setItem('monthlyIncome', monthlyIncome);
                 localStorage.setItem('profileSaved', 'true'); // Set the profileSaved flag
                 populateUserProfile(username, monthlyIncome);
