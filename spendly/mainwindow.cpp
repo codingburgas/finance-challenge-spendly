@@ -2,6 +2,12 @@
 #include <QWebChannel>
 #include <QTimer>
 #include <QOperatingSystemVersion>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
+#include <QCoreApplication>
+#include <QJsonArray>
+#include <QJsonObject>
 
 int timerDuration =
 #ifdef Q_OS_WIN
@@ -9,6 +15,32 @@ int timerDuration =
 #else
     0;
 #endif
+
+void exportReceiptsToCsv(const QList<QMap<QString, QVariant>>& receipts, const QString& filePath) {
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+
+        // Write CSV headers
+        out << "Date,Amount,Description\n";
+
+        // Write each receipt as a CSV row
+        for (const auto& receipt : receipts) {
+            QString row = QString("%1,%2,%3\n")
+            .arg(receipt["date"].toString())
+                .arg(receipt["amount"].toDouble())
+                .arg(receipt["description"].toString());
+            out << row;
+        }
+
+        file.close();
+        qDebug() << "Receipts exported to" << filePath;
+    } else {
+        qDebug() << "Failed to open file" << filePath;
+    }
+}
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), view(new QWebEngineView(this)), firebaseHelper(new FirebaseRestHelper(this)) {
@@ -51,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
         // Log the number of receipts fetched
         qDebug() << "Fetched receipts count:" << receipts.size();
 
+
         QString jsArray = "[";
         for (const auto& receipt : receipts) {
             jsArray += QString("{date: '%1', amount: '%2', description: 'Receipt'}")
@@ -64,6 +97,9 @@ MainWindow::MainWindow(QWidget *parent)
 
         // Log the constructed JavaScript array
         qDebug() << "JavaScript Array:" << jsArray;
+
+        //QString filePath = QCoreApplication::applicationDirPath() + "/../../../../../receipts.csv";
+        //exportReceiptsToCsv(receipts, filePath);
 
         // Update the historyData variable and call loadHistory
         QTimer::singleShot(timerDuration, this, [this, jsArray]() {
@@ -108,3 +144,23 @@ void MainWindow::loadHistory(const QString& userId) {
         firebaseHelper->fetchUserReceipts(userId);
     });
 }
+
+void MainWindow::exportReceipts(const QJsonArray& receiptsJson) {
+    QList<QMap<QString, QVariant>> receipts;
+
+    for (const QJsonValue& value : receiptsJson) {
+        QJsonObject obj = value.toObject();
+        QMap<QString, QVariant> receipt;
+
+        receipt["date"] = obj["date"].toString();
+        receipt["amount"] = obj["amount"].toString().toDouble(); // Convert amount to double
+        receipt["description"] = obj["description"].toString();
+
+        receipts.append(receipt);
+    }
+
+    QString filePath = QCoreApplication::applicationDirPath() + "/../../../../../receipts.csv";
+    exportReceiptsToCsv(receipts, filePath);
+    runJavaScript("showExportSuccessMessage();");
+}
+
