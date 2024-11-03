@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+
     <title>Home - Spendly</title>
     <style>
         html, body {
@@ -276,13 +280,16 @@
     <div class="claymorphic-box mt-8 mx-auto p-8">
                 <div class="wide-box">
                     <p>Space for the purchase diagram</p>
+                    <canvas id="receiptsChart" width="400" height="200"></canvas>
                 </div>
                 <div class="row">
                     <div class="small-box">
                         <p>latest purchase</p>
+                        <p id="latestPurchaseDisplay"></p>
                     </div>
                     <div class="small-box">
-                        <p>biggest purchase yet</p>
+                        <p>Biggest purchase yet:</p>
+                        <p id="biggestPurchaseDisplay"></p>
                     </div>
                 </div>
             </div>
@@ -335,9 +342,12 @@
             // WebChannel Initialization
             new QWebChannel(qt.webChannelTransport, function(channel) {
                 window.backend = channel.objects.backend;
+                backend.loadHistory(userId);
             });
 
+            let biggestPurchaseAmount = 0;
             const userId = localStorage.getItem('userId');
+
 
             document.addEventListener("DOMContentLoaded", function() {
                 const savedUsername = localStorage.getItem('username') || "User";
@@ -357,6 +367,110 @@
                     }, 500); // 500 milliseconds = 1/2 second
                 }
             });
+
+function loadHistory() {
+    // Display the biggest purchase amount
+    document.getElementById("biggestPurchaseDisplay").textContent = biggestPurchaseAmount > 0
+        ? `${biggestPurchaseAmount.toFixed(2)} BGN`
+        : "No purchases yet";
+
+    // Display the latest purchase amount and date
+    document.getElementById("latestPurchaseDisplay").textContent = latestPurchaseAmount > 0
+        ? `${latestPurchaseAmount.toFixed(2)} BGN on ${latestPurchaseDate}`
+        : "No purchases yet";
+
+    // Prepare data for the chart
+    const dates = historyData.map(receipt => receipt.date);
+    const amounts = historyData.map(receipt => parseFloat(receipt.amount));
+
+    // Create the chart
+    const ctx = document.getElementById('receiptsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates, // x-axis labels (dates)
+            datasets: [{
+                label: 'Total amount',
+                data: amounts, // y-axis data (amounts)
+                fill: true,
+                borderColor: 'rgba(255, 159, 64, 1)', // Orange line color
+                backgroundColor: 'rgba(255, 159, 64, 0.2)', // Light orange fill under the line
+                borderWidth: 2,
+                pointRadius: 3, // Small points to highlight each data point
+                pointBackgroundColor: 'rgba(255, 159, 64, 1)', // Orange point color
+                tension: 0.3 // Smoother curve
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Receipt Amounts Over Time',
+                    color: '#333',
+                    font: {
+                        size: 18
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            // Customize tooltip to show BGN
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += `${context.raw.toFixed(2)} BGN`;
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    display: false // Hide legend since we only have one dataset
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(200, 200, 200, 0.2)', // Light grid color
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Amount (BGN)',
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(200, 200, 200, 0.2)', // Light grid color
+                    }
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0.3 // Smoother line for a nicer curve
+                },
+                point: {
+                    radius: 3 // Small circles on data points
+                }
+            }
+        }
+    });
+}
+
+
+
+
 
             function toggleSlidingForm() {
                 const slidingForm = document.getElementById('slidingForm');

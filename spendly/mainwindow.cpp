@@ -78,34 +78,45 @@ MainWindow::MainWindow(QWidget *parent)
         });
     });
 
-    // Connect userReceiptsFetched signal to handle the receipt data
     connect(firebaseHelper, &FirebaseRestHelper::userReceiptsFetched, this, [this](const QList<QVariantMap>& receipts) {
-        // Log the number of receipts fetched
         qDebug() << "Fetched receipts count:" << receipts.size();
 
-
         QString jsArray = "[";
+        double maxAmount = 0.0;  // Track the maximum receipt amount
+        double latestAmount = 0.0;  // Track the latest receipt amount
+        QString latestDate;  // Track the latest receipt date
+
+        if (!receipts.isEmpty()) {
+            latestAmount = receipts.first()["totalAmount"].toDouble();
+            latestDate = receipts.first()["date"].toString();
+        }
+
         for (const auto& receipt : receipts) {
+            double amount = receipt["totalAmount"].toDouble();
+            maxAmount = std::max(maxAmount, amount); // Update maxAmount if the current amount is greater
+
             jsArray += QString("{date: '%1', amount: '%2', description: 'Receipt'}")
-            .arg(receipt["date"].toString())
-                .arg(receipt["totalAmount"].toDouble());
+                           .arg(receipt["date"].toString())
+                           .arg(amount);
             if (&receipt != &receipts.last()) {
                 jsArray += ",";
             }
         }
         jsArray += "]";
 
-        // Log the constructed JavaScript array
         qDebug() << "JavaScript Array:" << jsArray;
 
-        //QString filePath = QCoreApplication::applicationDirPath() + "/../../../../../receipts.csv";
-        //exportReceiptsToCsv(receipts, filePath);
-
-        // Update the historyData variable and call loadHistory
-        QTimer::singleShot(timerDuration, this, [this, jsArray]() {
-            runJavaScript(QString("historyData = %1; loadHistory();").arg(jsArray));
+        // Pass maxAmount, latestAmount, and latestDate to JavaScript along with the history data
+        QTimer::singleShot(timerDuration, this, [this, jsArray, maxAmount, latestAmount, latestDate]() {
+            runJavaScript(QString("historyData = %1; biggestPurchaseAmount = %2; latestPurchaseAmount = %3; latestPurchaseDate = '%4'; loadHistory();")
+                              .arg(jsArray)
+                              .arg(maxAmount)
+                              .arg(latestAmount)
+                              .arg(latestDate));
         });
     });
+
+
 
     // Connect the loadFinished signal to ensure the page is fully loaded before any JS calls
     connect(view, &QWebEngineView::loadFinished, this, [](bool ok) {
@@ -132,6 +143,7 @@ void MainWindow::handleAuthenticationRequest(const QString& type, const QString&
 
 void MainWindow::handleProfileUpdate(const QString& userId, const QString& username, double monthlyIncome) {
     firebaseHelper->updateUserProfile(userId, username, monthlyIncome);
+    //firebaseHelper->fetchUserReceipts(userId);
 }
 
 void MainWindow::runJavaScript(const QString& script) {
