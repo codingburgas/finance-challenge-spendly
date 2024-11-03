@@ -40,8 +40,6 @@ void exportReceiptsToCsv(const QList<QMap<QString, QVariant>>& receipts, const Q
     }
 }
 
-
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), view(new QWebEngineView(this)), firebaseHelper(new FirebaseRestHelper(this)) {
 

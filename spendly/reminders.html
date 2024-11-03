@@ -7,7 +7,6 @@
     <title>Reminders - Spendly</title>
     <style>
         html, body {
-            height: 100%;
             margin: 0;
             padding: 0;
             color: white;
@@ -28,19 +27,18 @@
         }
 
         .content {
-            top: 100px;
-            height: 400px;
+            min-height: 650px; /* Ensures it is longer */
             left: 0;
             right: 0;
             z-index: 10;
             text-align: center;
             padding: 20px;
+            padding-bottom: 30vh;
             background: #575757;
             box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
             position: relative;
-            border-radius: 23px;
-            max-height: calc(100vh - 200px); /* Limits the height */
-            overflow-y: auto; /* Enables scrolling */
+            max-height: calc(100vh - 100px); /* Adjust to fit viewport */
+            overflow-y: auto; /* Enable scrolling */
         }
 
         .content::-webkit-scrollbar {
@@ -59,38 +57,6 @@
 
         .claymorphic::placeholder {
             color: rgba(255, 255, 255, 0.6);
-        }
-
-        #text-line {
-            margin-bottom: 20px;
-        }
-
-        #text-line h1 {
-            font-style: normal;
-            font-weight: 700;
-            font-size: 24px;
-            line-height: 58px;
-        }
-
-        #text-line h1::before,
-        #text-line h1::after {
-            background-color: rgba(99, 99, 99, 1);
-            content: "";
-            display: inline-block;
-            height: 1px;
-            position: relative;
-            vertical-align: middle;
-            width: 22%;
-        }
-
-        #text-line h1::before {
-            right: 0.4em;
-            margin-left: -50%;
-        }
-
-        #text-line h1::after {
-            left: 0.4em;
-            margin-right: -50%;
         }
 
         .tab-nav {
@@ -129,38 +95,55 @@
             color: rgba(217, 217, 217, 1);
         }
 
-        .reminder-item {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            background-color: #333333;
-            border-radius: 15px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-        }
+.reminder-item {
+    display: flex;
+    align-items: stretch; /* Makes the icon as tall as the reminder */
+    background-color: #333333;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
 
-        .reminder-text {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ffffff;
-            overflow-wrap: break-word;
-        }
+.reminder-icon {
+    width: 100px; /* Adjust width as needed */
+    height: 100px; /* Set a constant height */
+    object-fit: cover;
+    margin-right: 15px; /* Space between the icon and the content */
+    flex-shrink: 0; /* Prevents the icon from resizing */
+}
 
-        .date {
-            font-size: 0.8rem;
-            color: #999999;
-            text-align: right;
-        }
+.text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1; /* Ensures it takes the available space */
+    width: 230px;
+}
 
-        .delete-button {
-            background: transparent;
-            border: none;
-            color: red;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-top: 10px;
-        }
+.reminder-text {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ffffff;
+    overflow-wrap: break-word;
+    text-align: left;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: #999999;
+    text-align: right;
+}
+
+.delete-button {
+    background: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    text-align: right;
+}
 
         .add-reminder-button {
             background-color: #48BB78;
@@ -201,7 +184,7 @@
             <img src="home.png" alt="Home Icon">
             <span>Home</span>
         </div>
-        <div class="tab" onclick="navigateTo('history')">
+        <div class="tab" onclick="navigateToHistory()">
             <img src="history.png" alt="History Icon">
             <span>History</span>
         </div>
@@ -230,6 +213,16 @@
             const listItem = document.createElement('li');
             listItem.className = 'reminder-item';
 
+            // Create the icon element
+            const reminderIcon = document.createElement('img');
+            reminderIcon.src = 'qrc:/html/reminders-icon.png'; // Replace with the path to your icon
+            reminderIcon.alt = 'Reminder Icon';
+            reminderIcon.className = 'reminder-icon'; // Add a class for styling
+
+            // Create the container for the text and other elements
+            const contentContainer = document.createElement('div');
+            contentContainer.className = 'text-container';
+
             const reminderText = document.createElement('span');
             reminderText.className = 'reminder-text';
             reminderText.textContent = text;
@@ -246,9 +239,16 @@
                 saveReminders();
             };
 
-            listItem.appendChild(reminderText);
-            listItem.appendChild(dateText);
-            listItem.appendChild(deleteButton);
+            // Append the text, date, and delete button to the content container
+            contentContainer.appendChild(reminderText);
+            contentContainer.appendChild(dateText);
+            contentContainer.appendChild(deleteButton);
+
+            // Append the icon and content container to the list item
+            listItem.appendChild(reminderIcon);
+            listItem.appendChild(contentContainer);
+
+            // Append the list item to the reminder list
             reminderList.appendChild(listItem);
             saveReminders();
         }
@@ -266,6 +266,16 @@
         function loadReminders() {
             const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
             reminders.forEach(reminder => addReminder(reminder.text, new Date(reminder.date).toISOString().split('T')[0]));
+        }
+
+        function navigateToHistory() {
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                // Call the backend method to load history
+                backend.loadHistory(userId);
+                // Change the view to the history page
+                window.location.href = 'qrc:/html/history.html'; // Change to your actual history HTML file
+            }
         }
 
         function navigateTo(page) {

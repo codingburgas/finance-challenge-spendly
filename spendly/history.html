@@ -13,6 +13,10 @@
             color: white;
         }
 
+        body::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
+
         .backdrop {
             background-image: url('qrc:/html/background2.png');
             background-size: cover;
@@ -27,17 +31,16 @@
         }
 
         .content {
-            top: 100px; /* Position content just above the navbar */
             left: 0;
             right: 0;
             z-index: 10;
             text-align: center;
             padding: 20px;
+            overflow-y: hidden;
             margin: 0 auto;
             background: #575757;
             box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
             position: relative; /* Ensure content is positioned relative */
-            border-radius: 23px;
         }
 
         /* Tab navigation styles */
@@ -175,14 +178,14 @@
             margin-right: -50%;
         }
         #historyList {
-            max-height: 400px; /* Set a maximum height for the scrollable area */
-            overflow-y: scroll; /* Enable vertical scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
             padding: 10px; /* Optional: Add some padding for better appearance */
         }
 
         #historyList::-webkit-scrollbar {
             display: none; /* Hides the scrollbar */
         }
+
 
 .hr-between-contents {
     width: 70%; /* Set the desired width */

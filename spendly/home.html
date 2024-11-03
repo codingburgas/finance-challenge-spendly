@@ -296,7 +296,7 @@
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M193.371 57C174.652 23.0211 138.493 0 96.9573 0C55.4215 0 19.2627 23.0211 0.544144 57H18.1039C35.166 31.665 64.1154 15 96.9573 15C129.799 15 158.749 31.665 175.811 57H193.371ZM193.915 162H176.475C159.506 187.896 130.229 205 96.9573 205C63.6852 205 34.4082 187.896 17.4396 162H0C18.556 196.526 55.0153 220 96.9573 220C138.899 220 175.359 196.526 193.915 162Z" fill="#00D048"/>
                             </svg>
                         </div>
-                        <p id="latestPurchaseDisplay" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
+                        <p id="latestPurchaseDisplay" style="position: absolute; top: 53%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
                             <p id="latestPurchaseValue"></p>
                         </p>
                 </div>
@@ -311,7 +311,7 @@
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M193.37 57C174.652 23.0211 138.493 0 96.9573 0C55.4216 0 19.2627 23.0211 0.544149 57H18.104C35.166 31.665 64.1155 15 96.9573 15C129.799 15 158.749 31.665 175.811 57H193.37ZM193.915 162H176.475C159.506 187.896 130.229 205 96.9573 205C63.6853 205 34.4083 187.896 17.4396 162H0C18.556 196.526 55.0154 220 96.9573 220C138.899 220 175.359 196.526 193.915 162Z" fill="#FD7C20"/>
                     </svg>
                         </div>
-                        <p id="biggestPurchaseDisplay" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
+                        <p id="biggestPurchaseDisplay" style="position: absolute; top: 53%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
                             <p id="biggestPurchaseValue"></p>
                         </p>
                 </div>
@@ -487,9 +487,6 @@ function loadHistory() {
 }
 
 
-
-
-
             function toggleSlidingForm() {
                 const slidingForm = document.getElementById('slidingForm');
                 const isVisible = slidingForm.classList.toggle('visible');
@@ -513,6 +510,43 @@ function loadHistory() {
                 const password = document.getElementById("passwordInput").value;
                 const monthlyIncome = parseFloat(document.getElementById("incomeInput").value) || 0;
 
+                const prohibitedUsernames = [
+                    "Admin",
+                    "Moderator",
+                    "Police",
+                    "SupportTeam",
+                    "CEO",
+                    "OfficialAccount",
+                    "Terrorist",
+                    "Scammer",,
+                    "123456",
+                    "Password",
+                    "Qwerty",
+                    "Username123",
+                    "TestUser",
+                    "Guest",
+                    "Anonymous",
+                    "Welcome",
+                    "Profile",
+                    "User",
+                    "user",
+                    "User1",
+                    "NewUser",
+                    "admin",
+                    "root",
+                    "username",
+                ];
+
+                if (prohibitedUsernames.includes(username.toLowerCase())) {
+                    alert("The username you entered is not allowed. Please choose a different username.");
+                    return;
+                }
+
+                if (monthlyIncome > 6600) {
+                    alert("For monthly income above 6600 you should contact an admin at admin@spendly.devs");
+                    return;
+                }
+
                 if (window.backend) {
                     window.backend.handleProfileUpdate(userId, username, monthlyIncome);
                 }
@@ -523,6 +557,7 @@ function loadHistory() {
                 populateUserProfile(username, monthlyIncome);
                 toggleSlidingForm();
             });
+
 
             function populateUserProfile(username, money) {
                 document.getElementById('monthlyIncomeDisplay').textContent = money;
