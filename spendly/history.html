@@ -14,7 +14,7 @@
         }
 
         .backdrop {
-            background-image: url('qrc:/html/background.png');
+            background-image: url('qrc:/html/background2.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -197,8 +197,8 @@
     <div class="content">
         <div id="text-line">
             <h1 class="text-4xl font-bold">History of Purchase</h1>
-            <button id="exportButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Export Receipts
+            <button id="exportButton"  style="padding: 5px; width: 160px; background: #FD7C20; color: white; border-radius: 10px;  align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: none; font-weight: 650;">
+            Export Receipts
             </button>
         </div>
         <ul id="historyList" class="mt-4">
@@ -279,8 +279,11 @@ function loadHistory() {
 
             // Right side content (QR code or placeholder)
             const qrCode = document.createElement('img');
-            qrCode.src = "path/to/qrcode.png"; // Replace with actual QR code image path
+            qrCode.src = "qrc:/html/qr-code.png"; // Replace with actual QR code image path
             qrCode.alt = "QR Code";
+            qrCode.style.width = '100px'; // Set the desired width
+            qrCode.style.height = '100px'; // Set the desired height
+            qrCode.style.borderRadius = '5px'; // Remove rounded corners
 
             listItem.appendChild(leftContent);
             listItem.appendChild(qrCode);

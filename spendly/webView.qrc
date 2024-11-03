@@ -12,6 +12,7 @@
         <file>home.png</file>
         <file>reminders.png</file>
         <file>background2.png</file>
+        <file>qr-code.png</file>
     </qresource>
     <qresource prefix="/assets">
         <file>assets/icon.png</file>

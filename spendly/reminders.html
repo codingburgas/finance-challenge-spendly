@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             color: white;
+            overflow: hidden; /* Prevents scrolling on the body */
         }
 
         .backdrop {
@@ -27,21 +28,71 @@
         }
 
         .content {
-            position: fixed;
-            bottom: 50px; /* Adjust to position content just above the navbar */
+            top: 100px;
+            height: 400px;
             left: 0;
             right: 0;
             z-index: 10;
             text-align: center;
             padding: 20px;
-            border-radius: 25px;
-            margin: 0 auto;
-            background: #424242;
+            background: #575757;
             box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
-
+            position: relative;
+            border-radius: 23px;
+            max-height: calc(100vh - 200px); /* Limits the height */
+            overflow-y: auto; /* Enables scrolling */
         }
 
-        /* Tab navigation styles */
+        .content::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
+
+        .claymorphic {
+            position: relative;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+            background: transparent;
+            padding: 5px 0;
+            outline: none;
+            color: white;
+        }
+
+        .claymorphic::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #text-line {
+            margin-bottom: 20px;
+        }
+
+        #text-line h1 {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 58px;
+        }
+
+        #text-line h1::before,
+        #text-line h1::after {
+            background-color: rgba(99, 99, 99, 1);
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 22%;
+        }
+
+        #text-line h1::before {
+            right: 0.4em;
+            margin-left: -50%;
+        }
+
+        #text-line h1::after {
+            left: 0.4em;
+            margin-right: -50%;
+        }
+
         .tab-nav {
             position: fixed;
             bottom: 0;
@@ -49,7 +100,7 @@
             right: 0;
             display: flex;
             justify-content: space-around;
-            padding: 5px 0; /* Reduce padding to make it shorter */
+            padding: 5px 0;
             z-index: 30;
             background: #464646;
             box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
@@ -61,7 +112,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5px; /* Adjust padding for shorter tab height */
+            padding: 5px;
             cursor: pointer;
             color: white;
         }
@@ -73,29 +124,76 @@
         }
 
         .tab span {
-            font-size: 0.6rem; /* Smaller text */
-            font-weight: 600; /* Make text bold */
-            color:rgba(217, 217, 217, 1); /* Add color to the text */
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: rgba(217, 217, 217, 1);
         }
 
+        .reminder-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #333333;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .reminder-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+            overflow-wrap: break-word;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            color: #999999;
+            text-align: right;
+        }
+
+        .delete-button {
+            background: transparent;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .add-reminder-button {
+            background-color: #48BB78;
+            color: white;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+        .add-reminder-button:hover {
+            background-color: #2F855A;
+        }
     </style>
 </head>
 <body>
     <div class="backdrop"></div>
     <div class="content">
-        <p class="text-lg" style="font-weight: 600;">Reminders</p>
-        <form id="reminderForm" class="mt-4">
-            <input type="text" id="reminderInput" placeholder="Add a new reminder" class="block w-full p-2 mb-2 rounded">
-            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded" >Add Reminder</button>
+        <div id="text-line">
+            <h1>Reminders</h1>
+        </div>
+        <form id="reminderForm">
+            <input type="text" id="reminderInput" class="claymorphic mb-4" placeholder="Enter your reminder" required>
+            <input type="date" id="dateInput" class="claymorphic mb-4" required>
+            <button type="submit" class="add-reminder-button">Add Reminder</button>
         </form>
-        <ul id="reminderList" class="mt-4" style="margin-bottom: 300px;">
-            <!-- List of reminders will be added here -->
-        </ul>
+        <ul id="reminderList" class="mt-4"></ul>
     </div>
 
-    <!-- Tab Navigator -->
     <div class="tab-nav" id="tabNav">
-        <div class="tab">
+        <div class="tab" onclick="navigateTo('reminders')">
             <img src="reminders.png" alt="Reminders Icon">
             <span>Reminders</span>
         </div>
@@ -103,51 +201,73 @@
             <img src="home.png" alt="Home Icon">
             <span>Home</span>
         </div>
-        <div class="tab" onclick="navigateToHistory()">
+        <div class="tab" onclick="navigateTo('history')">
             <img src="history.png" alt="History Icon">
             <span>History</span>
         </div>
     </div>
-<script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+    <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
-    // WebChannel Initialization
-    new QWebChannel(qt.webChannelTransport, function(channel) {
-        window.backend = channel.objects.backend;
-    });
-
-
-        // Handle reminder form submission
-        document.getElementById('reminderForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the form from submitting normally
-            const reminderInput = document.getElementById('reminderInput');
-            const reminderText = reminderInput.value.trim();
-
-            if (reminderText) {
-                addReminder(reminderText);
-                reminderInput.value = ''; // Clear the input field
-            } else {
-                alert("Please enter a reminder.");
-            }
+        new QWebChannel(qt.webChannelTransport, function(channel) {
+            window.backend = channel.objects.backend;
         });
 
-        // Function to add a reminder to the list
-        function addReminder(text) {
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReminders();
+        });
+
+        document.getElementById('reminderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const reminderText = document.getElementById('reminderInput').value;
+            const dateValue = document.getElementById('dateInput').value;
+
+            addReminder(reminderText, dateValue);
+            document.getElementById('reminderForm').reset();
+        });
+
+        function addReminder(text, date) {
             const reminderList = document.getElementById('reminderList');
             const listItem = document.createElement('li');
-            listItem.textContent = text;
-            listItem.className = "bg-gray-700 p-2 mb-2 rounded";
+            listItem.className = 'reminder-item';
+
+            const reminderText = document.createElement('span');
+            reminderText.className = 'reminder-text';
+            reminderText.textContent = text;
+
+            const dateText = document.createElement('span');
+            dateText.className = 'date';
+            dateText.textContent = new Date(date).toLocaleDateString();
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'delete-button';
+            deleteButton.onclick = function() {
+                reminderList.removeChild(listItem);
+                saveReminders();
+            };
+
+            listItem.appendChild(reminderText);
+            listItem.appendChild(dateText);
+            listItem.appendChild(deleteButton);
             reminderList.appendChild(listItem);
+            saveReminders();
         }
-        function navigateToHistory() {
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                // Call the backend method to load history
-                backend.loadHistory(userId);
-                // Change the view to the history page
-                window.location.href = 'qrc:/html/history.html'; // Change to your actual history HTML file
-            }
+
+        function saveReminders() {
+            const reminders = [];
+            document.querySelectorAll('.reminder-item').forEach(item => {
+                const text = item.querySelector('.reminder-text').textContent;
+                const date = item.querySelector('.date').textContent;
+                reminders.push({ text, date });
+            });
+            localStorage.setItem('reminders', JSON.stringify(reminders));
         }
-        // Function to handle tab navigation
+
+        function loadReminders() {
+            const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+            reminders.forEach(reminder => addReminder(reminder.text, new Date(reminder.date).toISOString().split('T')[0]));
+        }
+
         function navigateTo(page) {
             window.location.href = `${page}.html`;
         }

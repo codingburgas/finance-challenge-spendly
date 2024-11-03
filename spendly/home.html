@@ -18,7 +18,7 @@
         }
 
         .backdrop {
-            background-image: url('qrc:/html/background.png');
+            background-image: url('qrc:/html/background2.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -117,21 +117,25 @@
         }
 
         .wide-box {
-            background-color: #555555;
-            border-radius: 15px;
             padding: 15px;
             margin-bottom: 20px;
             margin-top: 20px;
             height: 190px;
+            background: #D9D9D9;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+
         }
 
         .small-box {
-            background-color: #666666;
-            border-radius: 15px;
             padding: 15px;
             flex: 1;
             margin-right: 10px;
             height: 120px;
+            background: #D9D9D9;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 75px rgba(0, 0, 0, 0.2), inset 7px 0px 51px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+
         }
 
         .small-box:last-child {
@@ -225,8 +229,7 @@
             top: 10px;
             left: 10px;
             padding: 5px 15px;
-            background: #ff832b;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
+            background: #FD7C20;
             color: white;
             border-radius: 20px;
             display: flex;
@@ -279,18 +282,41 @@
     <!-- New claymorphic box -->
     <div class="claymorphic-box mt-8 mx-auto p-8">
                 <div class="wide-box">
-                    <p>Space for the purchase diagram</p>
+                    <p></p>
                     <canvas id="receiptsChart" width="400" height="200"></canvas>
                 </div>
                 <div class="row">
-                    <div class="small-box">
-                        <p>latest purchase</p>
-                        <p id="latestPurchaseDisplay"></p>
-                    </div>
-                    <div class="small-box">
-                        <p>Biggest purchase yet:</p>
-                        <p id="biggestPurchaseDisplay"></p>
-                    </div>
+                <div class="small-box" style="position: relative; padding: 20px; text-align: center;">
+                        <!-- Title -->
+                        <p style="color: #3B3B3B; font-weight: 800; font-size: 12px; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); margin-bottom: 10px; width: 150px;">Latest purchase</p>
+
+                        <!-- SVG Background -->
+                        <div style="position: relative; display: inline-block; width: 70px; height: 70px; margin: 10px auto 0;">
+                            <svg width="100%" height="100%" viewBox="0 0 194 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M193.371 57C174.652 23.0211 138.493 0 96.9573 0C55.4215 0 19.2627 23.0211 0.544144 57H18.1039C35.166 31.665 64.1154 15 96.9573 15C129.799 15 158.749 31.665 175.811 57H193.371ZM193.915 162H176.475C159.506 187.896 130.229 205 96.9573 205C63.6852 205 34.4082 187.896 17.4396 162H0C18.556 196.526 55.0153 220 96.9573 220C138.899 220 175.359 196.526 193.915 162Z" fill="#00D048"/>
+                            </svg>
+                        </div>
+                        <p id="latestPurchaseDisplay" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
+                            <p id="latestPurchaseValue"></p>
+                        </p>
+                </div>
+
+                    <div class="small-box" style="position: relative; padding: 20px; text-align: center;">
+                        <!-- Title -->
+                        <p style="color: #3B3B3B; font-weight: 800; font-size: 12px; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); margin-bottom: 10px; width: 150px;">Biggest purchase</p>
+
+                        <!-- SVG Background -->
+                        <div style="position: relative; display: inline-block; width: 70px; height: 70px; margin: 10px auto 0;">
+                            <svg width="70px" height="70px" viewBox="0 0 194 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M193.37 57C174.652 23.0211 138.493 0 96.9573 0C55.4216 0 19.2627 23.0211 0.544149 57H18.104C35.166 31.665 64.1155 15 96.9573 15C129.799 15 158.749 31.665 175.811 57H193.37ZM193.915 162H176.475C159.506 187.896 130.229 205 96.9573 205C63.6853 205 34.4083 187.896 17.4396 162H0C18.556 196.526 55.0154 220 96.9573 220C138.899 220 175.359 196.526 193.915 162Z" fill="#FD7C20"/>
+                    </svg>
+                        </div>
+                        <p id="biggestPurchaseDisplay" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 800; color: #3B3B3B; width: 150px;">
+                            <p id="biggestPurchaseValue"></p>
+                        </p>
+                </div>
+
+
                 </div>
             </div>
     </div>
@@ -338,6 +364,7 @@
     </div>
 
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script>
             // WebChannel Initialization
             new QWebChannel(qt.webChannelTransport, function(channel) {
@@ -376,7 +403,7 @@ function loadHistory() {
 
     // Display the latest purchase amount and date
     document.getElementById("latestPurchaseDisplay").textContent = latestPurchaseAmount > 0
-        ? `${latestPurchaseAmount.toFixed(2)} BGN on ${latestPurchaseDate}`
+        ? `${latestPurchaseAmount.toFixed(2)} BGN`
         : "No purchases yet";
 
     // Prepare data for the chart
@@ -392,35 +419,26 @@ function loadHistory() {
             datasets: [{
                 label: 'Total amount',
                 data: amounts, // y-axis data (amounts)
-                fill: true,
-                borderColor: 'rgba(255, 159, 64, 1)', // Orange line color
-                backgroundColor: 'rgba(255, 159, 64, 0.2)', // Light orange fill under the line
+                fill: false, // No fill under the line
+                borderColor: 'rgba(75, 192, 75, 1)', // Green line color
                 borderWidth: 2,
                 pointRadius: 3, // Small points to highlight each data point
-                pointBackgroundColor: 'rgba(255, 159, 64, 1)', // Orange point color
-                tension: 0.3 // Smoother curve
+                pointBackgroundColor: 'rgba(75, 192, 75, 1)', // Green point color
+                tension: 0 // Straight line between points to follow historical order
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // Allow the chart to fit perfectly
             plugins: {
-                title: {
-                    display: true,
-                    text: 'Receipt Amounts Over Time',
-                    color: '#333',
-                    font: {
-                        size: 18
-                    }
-                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            // Customize tooltip to show BGN
                             let label = context.dataset.label || '';
                             if (label) {
                                 label += ': ';
                             }
-                            label += `${context.raw.toFixed(2)} BGN`;
+                            label += context.raw.toFixed(2) + ' BGN';
                             return label;
                         }
                     }
@@ -431,34 +449,34 @@ function loadHistory() {
             },
             scales: {
                 x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Date',
-                        color: '#666'
-                    },
+                    display: true,
                     grid: {
-                        color: 'rgba(200, 200, 200, 0.2)', // Light grid color
+                        display: true, // Show vertical grid lines
+                        color: 'rgba(200, 200, 200, 0.9)' // Customize grid line color
+                    },
+                    ticks: {
+                        display: false // Hide x-axis tick labels if not needed
                     }
                 },
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Amount (BGN)',
-                        color: '#666'
+                    min: 0,
+                    max: Math.max(...amounts),
+                    ticks: {
+                        callback: function(value) {
+                            return value.toFixed(0); // Display integer values
+                        },
+                        stepSize: Math.ceil(Math.max(...amounts) / (amounts.length - 1)), // Adjust step size
+                        maxTicksLimit: amounts.length // Limit ticks to match data points
                     },
                     grid: {
-                        color: 'rgba(200, 200, 200, 0.2)', // Light grid color
+                        display: false // Hide horizontal grid lines
                     }
                 }
             },
             elements: {
                 line: {
-                    tension: 0.3 // Smoother line for a nicer curve
+                    tension: 0 // Straight line for historical accuracy
                 },
                 point: {
                     radius: 3 // Small circles on data points
