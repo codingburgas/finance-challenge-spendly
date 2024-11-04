@@ -6,19 +6,20 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Spendly - Login</title>
     <style>
-        /* Ensure the background image covers the entire screen */
+        /* Basic styles for full-screen background image */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
 
+        /* Background properties */
         .backdrop {
             background-image: url('qrc:/html/background.png');
-            background-size: cover;  /* Ensures the background covers the entire screen */
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;  /* Prevents repeating */
-            background-attachment: fixed;  /* Keeps the background fixed while scrolling */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             position: fixed;
             top: 0;
             left: 0;
@@ -26,7 +27,7 @@
             height: 100%;
         }
 
-        /* Input field styles */
+        /* Styling for input fields */
         .claymorphic {
             border: none;
             border-bottom: 2px solid rgba(0, 0, 0, 0.3);
@@ -34,35 +35,38 @@
             padding: 0;
         }
 
-        /* Background container behind email, password, and buttons */
+        /* Container styling for input fields and buttons */
         .input-background {
             position: relative;
-            background: rgba(66, 66, 66, 0.5); /* 70% opacity */
+            background: rgba(66, 66, 66, 0.5);
             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset -9px -9px 25px rgba(0, 0, 0, 0.2), inset 7px 0px 21px rgba(0, 0, 0, 0.2);
             border-radius: 20px;
             padding: 20px;
             width: 100%;
         }
 
+        /* Animation effect for fading in elements */
         .fade-in {
             opacity: 0;
             animation: fadeInAnimation ease 0.5s forwards;
         }
 
+        /* Keyframes for fade-in animation */
         @keyframes fadeInAnimation {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
 
+        /* Hidden class to hide elements */
         .hidden { display: none; }
 
-        /* Styling for input field labels */
+        /* Label styles */
         label {
             font-size: 1rem;
             color: #636363;
         }
 
-        /* Adjust the line (input) below the label */
+        /* Input field styling */
         input {
             width: 100%;
             border: none;
@@ -74,11 +78,12 @@
             color: white;
         }
 
+        /* Placeholder text color */
         input::placeholder {
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Button styles */
+        /* Button styling */
         .btn {
             width: 100%;
             padding: 12px;
@@ -90,10 +95,12 @@
             cursor: pointer;
         }
 
+        /* Button hover effect */
         .btn:hover {
-            background-color: #C05000;  /* Darker orange on hover */
+            background-color: #C05000;
         }
 
+        /* Styling for link text */
         .text-link {
             color: #FFFFFF;
             margin-top: 10px;
@@ -101,11 +108,12 @@
             display: block;
         }
 
+        /* Link hover effect */
         .text-link:hover {
-            color: #C05000; /* Darker orange on hover */
+            color: #C05000;
         }
 
-        /* Styling for the line with text */
+        /* Styling for text separator line */
         .line-text-container {
             display: flex;
             align-items: center;
@@ -113,6 +121,7 @@
             margin-bottom: 20px;
         }
 
+        /* Styling for lines before and after text */
         .line-text-container::before,
         .line-text-container::after {
             content: '';
@@ -120,6 +129,7 @@
             border-bottom: 1px solid #636363;
         }
 
+        /* Space adjustments for separator lines */
         .line-text-container::before {
             margin-right: 10px;
         }
@@ -128,27 +138,29 @@
             margin-left: 10px;
         }
 
+        /* Styling for the separator text */
         .line-text {
             font-size: 1rem;
             color: #FFFFFF;
-            font-weight:bold;
+            font-weight: bold;
         }
 
     </style>
 </head>
 <body class="backdrop flex items-center justify-center min-h-screen">
+    <!-- Container holding the login form and related elements -->
     <div id="content" class="container mx-auto p-8 max-w-md w-full hidden">
         <div class="flex flex-col items-center mb-6">
             <img src="qrc:/html/login-img.png" alt="Login" class="w-48 h-32 mb-4 fade-in">
         </div>
 
-        <!-- Background Container around input fields and buttons -->
+        <!-- Form background container -->
         <div class="input-background fade-in">
-            <!-- Line with text -->
             <div class="line-text-container">
                 <span class="line-text">Login</span>
             </div>
 
+            <!-- Login form -->
             <form>
                 <div class="mb-4">
                     <input type="email" id="email" class="w-full focus:outline-none" placeholder="Email">
@@ -157,7 +169,7 @@
                     <input type="password" id="password" class="w-full focus:outline-none" placeholder="Password">
                 </div>
 
-                <!-- Sign In Button -->
+                <!-- Sign In button -->
                 <button id="signInButton" type="button" class="btn" style="font-weight: bold;">Sign In</button>
 
                 <!-- Sign Up link -->
@@ -169,14 +181,16 @@
 
         <p id="statusMessage" class="mt-4 text-center text-red-500 fade-in"></p>
     </div>
+
+    <!-- Script for web channel interaction and form functionality -->
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
-        // WebChannel initialization
+        // Initialize WebChannel
         new QWebChannel(qt.webChannelTransport, function(channel) {
             window.backend = channel.objects.backend;
         });
 
-        // Sign In button event listener
+        // Event listener for the Sign In button
         document.getElementById("signInButton").addEventListener("click", function() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
@@ -187,18 +201,17 @@
             }
         });
 
-        // Function to display status messages from the backend
+        // Function to display status messages
         function showStatusMessage(message, isSuccess) {
             const statusMessage = document.getElementById("statusMessage");
             statusMessage.textContent = message;
             statusMessage.style.color = isSuccess ? "green" : "red";
         }
 
-        // Show content after page load
+        // Show content when the page loads
         window.addEventListener('load', function() {
             document.getElementById('content').classList.remove('hidden');
         });
-
 
     </script>
 </body>

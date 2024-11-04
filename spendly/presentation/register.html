@@ -6,19 +6,20 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Spendly - Register</title>
     <style>
-        /* Ensure the background image covers the entire screen */
+        /* Full-screen background settings */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
 
+        /* Background image styling */
         .backdrop {
             background-image: url('qrc:/html/background.png');
-            background-size: cover;  /* Ensures the background covers the entire screen */
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;  /* Prevents repeating */
-            background-attachment: fixed;  /* Keeps the background fixed while scrolling */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             position: fixed;
             top: 0;
             left: 0;
@@ -26,7 +27,7 @@
             height: 100%;
         }
 
-        /* Input field styles */
+        /* Input field border and style */
         .claymorphic {
             border: none;
             border-bottom: 2px solid rgba(0, 0, 0, 0.3);
@@ -34,7 +35,7 @@
             padding: 0;
         }
 
-        /* Background container behind input fields and buttons */
+        /* Container behind form elements */
         .input-background {
             position: relative;
             background: rgba(66, 66, 66, 0.7); /* 70% opacity */
@@ -44,19 +45,22 @@
             width: 100%;
         }
 
+        /* Fade-in animation */
         .fade-in {
             opacity: 0;
             animation: fadeInAnimation ease 0.5s forwards;
         }
 
+        /* Animation keyframes for fade-in */
         @keyframes fadeInAnimation {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
 
+        /* Initial hidden state for elements */
         .hidden { display: none; }
 
-        /* Adjust the line (input) below the label */
+        /* Styling for input fields */
         input {
             width: 100%;
             border: none;
@@ -68,11 +72,12 @@
             color: white;
         }
 
+        /* Placeholder text color */
         input::placeholder {
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Button styles */
+        /* Button styling */
         .btn {
             width: 100%;
             padding: 12px;
@@ -84,10 +89,12 @@
             cursor: pointer;
         }
 
+        /* Button hover effect */
         .btn:hover {
             background-color: #388E3C;  /* Darker green on hover */
         }
 
+        /* Styling for sign-in link */
         .text-link {
             color: #FFFFFF;
             margin-top: 10px;
@@ -95,11 +102,12 @@
             display: block;
         }
 
+        /* Hover effect for sign-in link */
         .text-link:hover {
             color: #388E3C; /* Darker green on hover */
         }
 
-        /* Styling for the line with text */
+        /* Container for line with text */
         .line-text-container {
             display: flex;
             align-items: center;
@@ -107,6 +115,7 @@
             margin-bottom: 20px;
         }
 
+        /* Horizontal lines before and after text */
         .line-text-container::before,
         .line-text-container::after {
             content: '';
@@ -114,14 +123,17 @@
             border-bottom: 1px solid #636363;
         }
 
+        /* Spacing before text */
         .line-text-container::before {
             margin-right: 10px;
         }
 
+        /* Spacing after text */
         .line-text-container::after {
             margin-left: 10px;
         }
 
+        /* Text styling for the line */
         .line-text {
             font-size: 1rem;
             color: #FFFFFF;
@@ -131,49 +143,66 @@
     </style>
 </head>
 <body class="backdrop flex items-center justify-center min-h-screen">
+    <!-- Main container for registration form -->
     <div id="content" class="container mx-auto p-8 max-w-md w-full hidden">
         <div class="flex flex-col items-center mb-6">
+            <!-- Registration page image -->
             <img src="qrc:/html/register-img.png" alt="Login" class="w-48 h-32 mb-4 fade-in">
         </div>
 
-        <!-- Background Container around input fields and buttons -->
+        <!-- Form container with background styling -->
         <div class="input-background fade-in">
-            <!-- Line with text -->
+            <!-- Header text for the form -->
             <div class="line-text-container">
                 <span class="line-text">Create Account</span>
             </div>
 
             <form>
+                <!-- Email input field -->
                 <div class="mb-4">
                     <input type="email" id="email" class="w-full focus:outline-none" placeholder="Email">
                 </div>
+                <!-- Password input field -->
                 <div class="mb-4">
                     <input type="password" id="password" class="w-full focus:outline-none" placeholder="Password">
                 </div>
 
-                <!-- Sign Up Button -->
-                <button id="signUpButton" type="button" class="btn" style="font-weight: bold;" >Sign Up</button>
+                <!-- Sign Up button -->
+                <button id="signUpButton" type="button" class="btn" style="font-weight: bold;">Sign Up</button>
 
-                <!-- Sign In link -->
+                <!-- Link to Sign In page -->
                 <a href="qrc:/html/index.html" class="text-link">Sign In</a>
             </form>
         </div>
 
+        <!-- Display status messages -->
         <p id="statusMessage" class="mt-4 text-center text-red-500 fade-in"></p>
     </div>
 
-
+    <!-- Script for WebChannel communication -->
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
     <script>
-        // WebChannel initialization
+        // Initialize WebChannel for backend communication
         new QWebChannel(qt.webChannelTransport, function(channel) {
             window.backend = channel.objects.backend;
         });
 
-        // Sign Up button event listener
+        // Event listener for Sign Up button click
         document.getElementById("signUpButton").addEventListener("click", function() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+
+            // Improved password validation: minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+            // Use this condition if special characters are required
+            if (!passwordRegex.test(password)) {
+                showStatusMessage("Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, and one number.", false);
+                return;
+            }
+
+
+            // Send sign-up request to backend if WebChannel is ready
             if (window.backend) {
                 window.backend.handleAuthenticationRequest("signUp", email, password);
             } else {
@@ -181,7 +210,7 @@
             }
         });
 
-        // Function to display status messages from the backend
+        // Display status messages to user
         function showStatusMessage(message, isSuccess) {
             const statusMessage = document.getElementById("statusMessage");
             statusMessage.textContent = message;
