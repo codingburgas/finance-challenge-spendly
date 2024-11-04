@@ -70,10 +70,13 @@
 
 # 📁 Documents
 ### Code & Team Documentation
+- [Documentation](https://codingburgas-my.sharepoint.com/:w:/g/personal/dpdimitrakov22_codingburgas_bg/EXqPHB7p2xBDkMza3QSlyVMBMGqKngGW3-6Ewmb0X6HqxQ?e=vcne0m)
 
 ### Presenting
+  - [Presentation](https://codingburgas-my.sharepoint.com/:p:/g/personal/dpdimitrakov22_codingburgas_bg/EU0XogGLGpNCqQzdUKMoDg8BiosaR6BEwsj292GIRGYYRQ?e=bb4COO)
     
 ### Design
+  - [Design](https://github.com/codingburgas/finance-challenge-spendly/blob/cb388ef3b8c9008723cfc6cb35c96eac1ae2a2e0/docx/Design.fig)
 
 # 👥 Team
 
