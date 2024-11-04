@@ -9,11 +9,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-int timerDuration =
-#ifdef Q_OS_WIN
-    400;
+#ifdef Q_OS_MAC
+    int timerDuration = 0; 
 #else
-    0;
+    int timerDuration = 400;
 #endif
 
 void exportReceiptsToCsv(const QList<QMap<QString, QVariant>>& receipts, const QString& filePath) {

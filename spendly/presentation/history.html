@@ -226,15 +226,16 @@
     </div>
 <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
 <script>
-new QWebChannel(qt.webChannelTransport, function (channel) {
-    window.backend = channel.objects.backend;
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+        window.backend = channel.objects.backend;
 
-    // Optionally log to confirm the backend is accessible
-    console.log("Backend object registered:", window.backend);
-});
-let historyData = [];
+        // Optionally log to confirm the backend is accessible
+        console.log("Backend object registered:", window.backend);
+    });
 
-function loadHistory() {
+    let historyData = [];
+
+    function loadHistory() {
         const historyList = document.getElementById('historyList');
         historyList.innerHTML = ''; // Clear previous content
 
@@ -308,15 +309,15 @@ function loadHistory() {
         localStorage.setItem('historyData', JSON.stringify(historyData)); // Convert to JSON string
     }
 
-document.getElementById("exportButton").addEventListener("click", function() {
-    if (window.backend && typeof window.backend.exportReceipts === 'function') {
-        window.backend.exportReceipts(historyData); // Pass receipts data
-    } else {
-        console.error("Export function not available in backend.");
-    }
-});
+    document.getElementById("exportButton").addEventListener("click", function() {
+        if (window.backend && typeof window.backend.exportReceipts === 'function') {
+            window.backend.exportReceipts(historyData); // Pass receipts data
+        } else {
+            console.error("Export function not available in backend.");
+        }
+    });
 
-function showExportSuccessMessage() {
+    function showExportSuccessMessage() {
         alert("Receipts have been successfully exported!");
     }
 
@@ -326,9 +327,9 @@ function showExportSuccessMessage() {
         saveHistoryData(); // Save to local storage
     }
 
-function navigateTo(page) {
-    window.location.href = `${page}.html`;
-}
+    function navigateTo(page) {
+        window.location.href = `${page}.html`;
+    }
 </script>
 
 

@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/html">
-        <file>index.html</file>
         <file>background.png</file>
         <file>register-img.png</file>
         <file>register.html</file>
@@ -14,9 +13,10 @@
         <file>background2.png</file>
         <file>qr-code.png</file>
         <file>reminders-icon.png</file>
+        <file>index.html</file>
     </qresource>
     <qresource prefix="/assets">
-        <file>assets/icon.png</file>
-        <file>assets/icon-mac.icns</file>
+        <file>icon.png</file>
+        <file>icon-mac.icns</file>
     </qresource>
 </RCC>

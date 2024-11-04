@@ -10,13 +10,13 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    firebase_rest_helper.cpp \
-    main.cpp \
-    mainwindow.cpp
+    ./business_logic/firebase_rest_helper.cpp \
+    ./business_logic/main.cpp \
+    ./business_logic/mainwindow.cpp
 
 HEADERS += \
-    firebase_rest_helper.h \
-    mainwindow.h
+    ./business_logic/firebase_rest_helper.h \
+    ./business_logic/mainwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -24,8 +24,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    webView.qrc
+    ./presentation/webView.qrc
 
-ICON = assets/icon-mac.icns
+ICON = presentation/icon-mac.icns
 
 DISTFILES +=

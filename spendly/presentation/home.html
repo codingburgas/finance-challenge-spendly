@@ -395,96 +395,96 @@
                 }
             });
 
-function loadHistory() {
-    // Display the biggest purchase amount
-    document.getElementById("biggestPurchaseDisplay").textContent = biggestPurchaseAmount > 0
-        ? `${biggestPurchaseAmount.toFixed(2)} BGN`
-        : "No purchases yet";
+            function loadHistory() {
+                // Display the biggest purchase amount
+                document.getElementById("biggestPurchaseDisplay").textContent = biggestPurchaseAmount > 0
+                    ? `${biggestPurchaseAmount.toFixed(2)} BGN`
+                    : "No purchases yet";
 
-    // Display the latest purchase amount and date
-    document.getElementById("latestPurchaseDisplay").textContent = latestPurchaseAmount > 0
-        ? `${latestPurchaseAmount.toFixed(2)} BGN`
-        : "No purchases yet";
+                // Display the latest purchase amount and date
+                document.getElementById("latestPurchaseDisplay").textContent = latestPurchaseAmount > 0
+                    ? `${latestPurchaseAmount.toFixed(2)} BGN`
+                    : "No purchases yet";
 
-    // Prepare data for the chart
-    const dates = historyData.map(receipt => receipt.date);
-    const amounts = historyData.map(receipt => parseFloat(receipt.amount));
+                // Prepare data for the chart
+                const dates = historyData.map(receipt => receipt.date);
+                const amounts = historyData.map(receipt => parseFloat(receipt.amount));
 
-    // Create the chart
-    const ctx = document.getElementById('receiptsChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates, // x-axis labels (dates)
-            datasets: [{
-                label: 'Total amount',
-                data: amounts, // y-axis data (amounts)
-                fill: false, // No fill under the line
-                borderColor: 'rgba(75, 192, 75, 1)', // Green line color
-                borderWidth: 2,
-                pointRadius: 3, // Small points to highlight each data point
-                pointBackgroundColor: 'rgba(75, 192, 75, 1)', // Green point color
-                tension: 0 // Straight line between points to follow historical order
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // Allow the chart to fit perfectly
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
+                // Create the chart
+                const ctx = document.getElementById('receiptsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates, // x-axis labels (dates)
+                        datasets: [{
+                            label: 'Total amount',
+                            data: amounts, // y-axis data (amounts)
+                            fill: false, // No fill under the line
+                            borderColor: 'rgba(75, 192, 75, 1)', // Green line color
+                            borderWidth: 2,
+                            pointRadius: 3, // Small points to highlight each data point
+                            pointBackgroundColor: 'rgba(75, 192, 75, 1)', // Green point color
+                            tension: 0 // Straight line between points to follow historical order
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Allow the chart to fit perfectly
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.raw.toFixed(2) + ' BGN';
+                                        return label;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: false // Hide legend since we only have one dataset
                             }
-                            label += context.raw.toFixed(2) + ' BGN';
-                            return label;
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                grid: {
+                                    display: true, // Show vertical grid lines
+                                    color: 'rgba(200, 200, 200, 0.9)' // Customize grid line color
+                                },
+                                ticks: {
+                                    display: false // Hide x-axis tick labels if not needed
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: Math.max(...amounts),
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toFixed(0); // Display integer values
+                                    },
+                                    stepSize: Math.ceil(Math.max(...amounts) / (amounts.length - 1)), // Adjust step size
+                                    maxTicksLimit: amounts.length // Limit ticks to match data points
+                                },
+                                grid: {
+                                    display: false // Hide horizontal grid lines
+                                }
+                            }
+                        },
+                        elements: {
+                            line: {
+                                tension: 0 // Straight line for historical accuracy
+                            },
+                            point: {
+                                radius: 3 // Small circles on data points
+                            }
                         }
                     }
-                },
-                legend: {
-                    display: false // Hide legend since we only have one dataset
-                }
-            },
-            scales: {
-                x: {
-                    display: true,
-                    grid: {
-                        display: true, // Show vertical grid lines
-                        color: 'rgba(200, 200, 200, 0.9)' // Customize grid line color
-                    },
-                    ticks: {
-                        display: false // Hide x-axis tick labels if not needed
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: Math.max(...amounts),
-                    ticks: {
-                        callback: function(value) {
-                            return value.toFixed(0); // Display integer values
-                        },
-                        stepSize: Math.ceil(Math.max(...amounts) / (amounts.length - 1)), // Adjust step size
-                        maxTicksLimit: amounts.length // Limit ticks to match data points
-                    },
-                    grid: {
-                        display: false // Hide horizontal grid lines
-                    }
-                }
-            },
-            elements: {
-                line: {
-                    tension: 0 // Straight line for historical accuracy
-                },
-                point: {
-                    radius: 3 // Small circles on data points
-                }
+                });
             }
-        }
-    });
-}
 
 
             function toggleSlidingForm() {
