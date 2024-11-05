@@ -17,7 +17,7 @@ public:
     void fetchUserReceipts(const QString& userId);
 
 signals:
-    void authenticationSuccess(const QString& userId); // Changed back to take only `userId` as an argument
+    void authenticationSuccess(const QString& userId);
     void authenticationFailed(const QString& error);
     void userProfileFetched(const QString& username, double monthlyIncome);
     void userReceiptsFetched(const QList<QVariantMap>& receipts);
@@ -27,8 +27,8 @@ private slots:
 
 private:
     QNetworkAccessManager* networkManager;
-    const QString apiKey = "AIzaSyDUgY1jN4EMveQ7G8LTAIYbov0UVqzbMQk"; // Replace with your actual API key
-    QString idToken; // Store idToken for use in authenticated requests
+    const QString apiKey = "AIzaSyDUgY1jN4EMveQ7G8LTAIYbov0UVqzbMQk";
+    QString idToken;
 };
 
-#endif // FIREBASE_REST_HELPER_H
+#endif

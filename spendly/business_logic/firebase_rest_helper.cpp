@@ -50,7 +50,7 @@ void FirebaseRestHelper::updateUserProfile(const QString& userId, const QString&
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Authorization", "Bearer " + idToken.toUtf8()); // Add authentication token
+    request.setRawHeader("Authorization", "Bearer " + idToken.toUtf8());
     networkManager->sendCustomRequest(request, "PATCH", QJsonDocument(data).toJson());
 }
 
@@ -87,13 +87,12 @@ void FirebaseRestHelper::fetchUserReceipts(const QString& userId) {
 void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
     if (reply->error() == QNetworkReply::NoError) {
         auto jsonResponse = QJsonDocument::fromJson(reply->readAll()).object();
-        //qDebug() << "JSON Response:" << jsonResponse;
 
-        // Check if the response is an authentication response
+
         if (jsonResponse.contains("idToken")) {
             QString userId = jsonResponse.value("localId").toString();
             idToken = jsonResponse.value("idToken").toString();
-            emit authenticationSuccess(userId); // Emit only `userId`
+            emit authenticationSuccess(userId);
         }
 
         // Check if the response is a user profile response
@@ -101,7 +100,7 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
             QJsonObject fields = jsonResponse["fields"].toObject();
             QString username;
             double monthlyIncome = 0.0;
-            bool validProfile = false; // Flag to track if we have a valid profile
+            bool validProfile = false;
 
             // Extract username
             if (fields.contains("username") && fields["username"].isObject()) {
@@ -110,12 +109,12 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
 
             // Extract monthly income
             if (fields.contains("monthlyIncome") && fields["monthlyIncome"].isObject()) {
-                monthlyIncome = fields["monthlyIncome"].toObject().value("doubleValue").toDouble(); // Directly convert to double
+                monthlyIncome = fields["monthlyIncome"].toObject().value("doubleValue").toDouble();
             }
 
             // Check if both username and monthlyIncome are valid
             if (!username.isEmpty() && monthlyIncome >= 0.0) {
-                validProfile = true; // Set flag to true if profile is valid
+                validProfile = true;
             }
 
             // Emit the signal only if the profile is valid
@@ -146,8 +145,7 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
                     // Extract date
                     if (receiptFields.contains("date") && receiptFields["date"].isObject()) {
                         QString isoDate = receiptFields["date"].toObject()["mapValue"].toObject()["fields"].toObject()["data"].toObject()["stringValue"].toString();
-                        // Format the date to YYYY-MM-DD
-                        QString formattedDate = isoDate.left(10); // Get first 10 characters (YYYY-MM-DD)
+                        QString formattedDate = isoDate.left(10);
                         receiptData["date"] = formattedDate;
                     }
 
@@ -165,7 +163,7 @@ void FirebaseRestHelper::onNetworkReply(QNetworkReply* reply) {
 
             // Emit the signal only if receipts is not empty
             if (!receipts.isEmpty()) {
-                emit userReceiptsFetched(receipts); // Emit the signal with the list of receipts
+                emit userReceiptsFetched(receipts);
             } else {
                 qDebug() << "No valid receipts found, signal not emitted.";
             }

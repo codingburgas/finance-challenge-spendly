@@ -14,16 +14,15 @@
 #else
     int timerDuration = 400;
 #endif
-
+// Function to export all reciepts in a csv file
 void exportReceiptsToCsv(const QList<QMap<QString, QVariant>>& receipts, const QString& filePath) {
     QFile file(filePath);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
 
-        // Write CSV headers
+
         out << "Date,Amount,Description\n";
 
-        // Write each receipt as a CSV row
         for (const auto& receipt : receipts) {
             QString row = QString("%1,%2,%3\n")
             .arg(receipt["date"].toString())
@@ -57,9 +56,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(firebaseHelper, &FirebaseRestHelper::authenticationSuccess, this, [this](const QString& userId) {
         runJavaScript(QString("localStorage.setItem('userId', '%1');").arg(userId));
         firebaseHelper->fetchUserProfile(userId);
-
-        // Only fetch receipts if you're going to the history screen after login
-        // Comment out the next line to stop fetching receipts during login
         // firebaseHelper->fetchUserReceipts(userId);
 
         runJavaScript("window.location.href = 'qrc:/html/home.html';");
@@ -69,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(firebaseHelper, &FirebaseRestHelper::userProfileFetched, this, [this](const QString& username, double monthlyIncome) {
         qDebug() << "Calling runJavaScript with: " << username << ", " << monthlyIncome;
 
-        // Create a QTimer to introduce a delay before calling the JavaScript function
+
         QTimer::singleShot(timerDuration, this, [this, username, monthlyIncome]() {
             runJavaScript(QString("populateUserProfile('%1', %2);").arg(username).arg(monthlyIncome));
         });
@@ -79,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "Fetched receipts count:" << receipts.size();
 
         QString jsArray = "[";
-        double maxAmount = 0.0;  // Track the maximum receipt amount
-        double latestAmount = 0.0;  // Track the latest receipt amount
-        QString latestDate;  // Track the latest receipt date
+        double maxAmount = 0.0;
+        double latestAmount = 0.0;
+        QString latestDate;
 
         if (!receipts.isEmpty()) {
             latestAmount = receipts.first()["totalAmount"].toDouble();
@@ -90,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         for (const auto& receipt : receipts) {
             double amount = receipt["totalAmount"].toDouble();
-            maxAmount = std::max(maxAmount, amount); // Update maxAmount if the current amount is greater
+            maxAmount = std::max(maxAmount, amount);
 
             jsArray += QString("{date: '%1', amount: '%2', description: 'Receipt'}")
                            .arg(receipt["date"].toString())
@@ -129,7 +125,7 @@ MainWindow::~MainWindow() {
     delete view;
     delete firebaseHelper;
 }
-
+// Log in and Sign up function
 void MainWindow::handleAuthenticationRequest(const QString& type, const QString& email, const QString& password) {
     if (type == "signIn") {
         firebaseHelper->signIn(email, password);
@@ -146,14 +142,13 @@ void MainWindow::handleProfileUpdate(const QString& userId, const QString& usern
 void MainWindow::runJavaScript(const QString& script) {
     view->page()->runJavaScript(script);
 }
-
-// New method to load receipts for history
+// Function that loads reciepts
 void MainWindow::loadHistory(const QString& userId) {
     QTimer::singleShot(timerDuration, this, [this, userId]() {
         firebaseHelper->fetchUserReceipts(userId);
     });
 }
-
+// Function that converts reciepts values to strings
 void MainWindow::exportReceipts(const QJsonArray& receiptsJson) {
     QList<QMap<QString, QVariant>> receipts;
 
@@ -162,7 +157,7 @@ void MainWindow::exportReceipts(const QJsonArray& receiptsJson) {
         QMap<QString, QVariant> receipt;
 
         receipt["date"] = obj["date"].toString();
-        receipt["amount"] = obj["amount"].toString().toDouble(); // Convert amount to double
+        receipt["amount"] = obj["amount"].toString().toDouble();
         receipt["description"] = obj["description"].toString();
 
         receipts.append(receipt);

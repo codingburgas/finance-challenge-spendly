@@ -24,4 +24,4 @@ private:
     FirebaseRestHelper *firebaseHelper;
 };
 
-#endif // MAINWINDOW_H
+#endif
