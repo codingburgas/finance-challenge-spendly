@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>History - Spendly</title>
+    <style>
+        /* Full-screen layout and text color */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        /* Hide scrollbar */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Background properties */
+        .backdrop {
+            background-image: url('qrc:/html/background2.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Main content styling */
+        .content {
+            left: 0;
+            right: 0;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            overflow-y: hidden;
+            margin: 0 auto;
+            background: #575757;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        /* Tab navigation bar */
+        .tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            z-index: 30;
+            background: #464646;
+            box-shadow: inset -9px -9px 75px rgba(0, 0, 0, 0.25), inset 7px 0px 51px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Individual tab styling */
+        .tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Tab icon styling */
+        .tab img {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* Tab text styling */
+        .tab span {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: rgba(217, 217, 217, 1);
+        }
+
+        /* Purchase history container */
+        .purchase-history-container {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background-color: #444444;
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            color: #cccccc;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* History card styling */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333333;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Left side content of history card */
+        .history-item-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Amount styling with check icon */
+        .history-item .amount {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Check icon next to the amount */
+        .check-icon {
+            width: 16px;
+            height: 16px;
+            margin-left: 5px;
+            color: #00D048;
+        }
+
+        /* Description text styling */
+        .history-item .description {
+            font-size: 1rem;
+            color: #cccccc;
+        }
+
+        /* Date text styling */
+        .history-item .date {
+            font-size: 0.8rem;
+            color: #999999;
+            margin-top: 5px;
+        }
+
+        /* QR code image styling */
+        .history-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        /* Decorative line in header */
+        #text-line h1 {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 58px;
+        }
+
+        /* Line before and after header text */
+        #text-line h1::before,
+        #text-line h1::after {
+            background-color: rgba(99, 99, 99, 1);
+            content: "";
+            display: inline-block;
+            height: 1px;
+            position: relative;
+            vertical-align: middle;
+            width: 22%;
+        }
+
+        /* Adjust line positioning */
+        #text-line h1::before {
+            right: 0.4em;
+            margin-left: -50%;
+        }
+
+        #text-line h1::after {
+            left: 0.4em;
+            margin-right: -50%;
+        }
+
+        /* Scrollable history list */
+        #historyList {
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* Hide scrollbar for history list */
+        #historyList::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Horizontal line between items */
+        .hr-between-contents {
+            width: 70%;
+            margin: 10px auto;
+            border: 1px solid rgba(217, 217, 217, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="backdrop"></div>
+    <div class="content">
+        <div id="text-line">
+            <h1 class="text-4xl font-bold">History of Purchase</h1>
+            <button id="exportButton" style="padding: 5px; width: 160px; background: #FD7C20; color: white; border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: none; font-weight: 650;">
+            Export Receipts
+            </button>
+        </div>
+        <ul id="historyList" class="mt-4">
+            <!-- Dynamic history list will be rendered here -->
+        </ul>
+    </div>
+    <br>
+    <!-- Tab navigation -->
+    <div class="tab-nav" id="tabNav">
+        <div class="tab" onclick="navigateTo('reminders')">
+            <img src="reminders.png" alt="Reminders Icon">
+            <span>Reminders</span>
+        </div>
+        <div class="tab" onclick="navigateTo('home')">
+            <img src="home.png" alt="Home Icon">
+            <span>Home</span>
+        </div>
+        <div class="tab">
+            <img src="history.png" alt="History Icon">
+            <span>History</span>
+        </div>
+    </div>
+<script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+<script>
+    // Initialize WebChannel for backend communication
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+        window.backend = channel.objects.backend;
+        console.log("Backend object registered:", window.backend);
+    });
+
+    // Data array to hold history items
+    let historyData = [];
+
+    // Load and display purchase history
+    function loadHistory() {
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = '';
+
+        historyData.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.className = "history-item";
+
+            // Left content creation
+            const leftContent = document.createElement('div');
+            leftContent.className = "history-item-left";
+
+            const amount = document.createElement('span');
+            amount.className = "amount";
+            amount.textContent = `${item.amount} BGN`;
+
+            // Adding check icon next to the amount
+            const svgIcon = `
+                <svg width="20" height="20" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="45" cy="45" r="45" fill="#00D048"/>
+                    <path d="M27.4089 51.0798L40.4371 60.6198L63 30" stroke="white" stroke-width="13" stroke-linecap="round"/>
+                </svg>`;
+            const svgContainer = document.createElement('span');
+            svgContainer.innerHTML = svgIcon;
+            svgContainer.style.marginLeft = '5px';
+            amount.appendChild(svgContainer);
+
+            leftContent.appendChild(amount);
+
+            // Horizontal line separator
+            const hr = document.createElement('hr');
+            hr.className = "hr-between-contents";
+            leftContent.appendChild(hr);
+
+            const description = document.createElement('span');
+            description.className = "description";
+            description.textContent = item.description;
+            leftContent.appendChild(description);
+
+            const date = document.createElement('span');
+            date.className = "date";
+            date.textContent = `Date: ${item.date}`;
+            leftContent.appendChild(date);
+
+            // QR code placeholder
+            const qrCode = document.createElement('img');
+            qrCode.src = "qrc:/html/qr-code.png";
+            qrCode.alt = "QR Code";
+            qrCode.style.width = '100px';
+            qrCode.style.height = '100px';
+            qrCode.style.borderRadius = '5px';
+
+            listItem.appendChild(leftContent);
+            listItem.appendChild(qrCode);
+            historyList.appendChild(listItem);
+        });
+    }
+
+    // Load history data from local storage
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedData = localStorage.getItem('historyData');
+        if (storedData) {
+            historyData = JSON.parse(storedData);
+            loadHistory();
+        }
+    });
+
+    // Save updated history data to local storage
+    function saveHistoryData() {
+        localStorage.setItem('historyData', JSON.stringify(historyData));
+    }
+
+    // Export button functionality
+    document.getElementById("exportButton").addEventListener("click", function() {
+        if (window.backend && typeof window.backend.exportReceipts === 'function') {
+            window.backend.exportReceipts(historyData);
+        } else {
+            console.error("Export function not available in backend.");
+        }
+    });
+
+    // Display success message on export
+    function showExportSuccessMessage() {
+        alert("Receipts have been successfully exported!");
+    }
+
+    // Update history data and save it
+    function updateHistoryData(newData) {
+        historyData = newData;
+        saveHistoryData();
+    }
+
+    // Navigation function for tab clicks
+    function navigateTo(page) {
+        window.location.href = `${page}.html`;
+    }
+</script>
+</body>
+</html>

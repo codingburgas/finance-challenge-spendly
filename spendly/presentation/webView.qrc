@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/html">
+        <file>background.png</file>
+        <file>register-img.png</file>
+        <file>register.html</file>
+        <file>login-img.png</file>
+        <file>home.html</file>
+        <file>history.html</file>
+        <file>reminders.html</file>
+        <file>history.png</file>
+        <file>home.png</file>
+        <file>reminders.png</file>
+        <file>background2.png</file>
+        <file>qr-code.png</file>
+        <file>reminders-icon.png</file>
+        <file>index.html</file>
+        <file>edit-profile.png</file>
+    </qresource>
+    <qresource prefix="/assets">
+        <file>icon.png</file>
+        <file>icon-mac.icns</file>
+    </qresource>
+</RCC>
